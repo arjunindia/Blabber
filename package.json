@@ -3,27 +3,36 @@
   "module": "src/index.tsx",
   "type": "module",
   "scripts": {
+    "db:generate": "bunx drizzle-kit generate:sqlite",
+    "db:migrate": "bunx drizzle-kit migrate:sqlite",
     "db:push": "bunx drizzle-kit push:sqlite",
     "db:studio": "bunx drizzle-kit studio",
-    "dev": "concurrently \"bun run --watch src/index.tsx\" \"bun run tw:dev\"",
+    "dev": "concurrently \"bun --hot run src/index.tsx\" \"bun run tw:dev\"",
     "tw": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
     "tw:dev": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "latest",
+    "@tailwindcss/forms": "^0.5.6",
+    "@tailwindcss/typography": "^0.5.10",
     "bun-types": "latest",
-    "concurrently": "^8.2.0",
-    "drizzle-kit": "^0.19.6",
+    "concurrently": "^8.2.1",
+    "drizzle-kit": "^0.19.13",
+    "tailwind-content-placeholder": "^0.0.5",
     "tailwindcss": "^3.3.3",
-    "typed-html": "^3.0.1"
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-full-bleed": "^2.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@elysiajs/html": "^0.5.2",
-    "@libsql/client": "^0.3.0",
-    "drizzle-orm": "^0.27.2",
-    "elysia": "^0.5.22"
+    "@bogeychan/elysia-logger": "^0.0.5",
+    "@elysiajs/fn": "^0.6.1",
+    "@elysiajs/html": "^0.6.1",
+    "@libsql/client": "^0.3.5-pre.1",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.28.6",
+    "elysia": "^0.6.22"
   }
 }

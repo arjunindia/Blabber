@@ -2,6 +2,10 @@
 
 tailwind-gen
 
+
+sqlite.db
+
+
 # Logs
 
 logs

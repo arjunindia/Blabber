@@ -1,8 +1,7 @@
 import { Elysia, t } from "elysia";
-import { html } from "@elysiajs/html";
-import * as elements from "typed-html";
+import { html, PropsWithChildren } from "@elysiajs/html";
 import { db } from "./db";
-import { Todo, todos } from "./db/schema";
+import { TodoSelect, todos } from "./db/schema";
 import { eq } from "drizzle-orm";
 
 const app = new Elysia()
@@ -21,6 +20,7 @@ const app = new Elysia()
   )
   .get("/todos", async () => {
     const data = await db.select().from(todos).all();
+    console.log(data);
     return <TodoList todos={data} />;
   })
   .post(
@@ -33,7 +33,7 @@ const app = new Elysia()
         .get();
       const newTodo = await db
         .update(todos)
-        .set({ completed: !oldTodo.completed })
+        .set({ completed: !oldTodo?.completed })
         .where(eq(todos.id, params.id))
         .returning()
         .get();
@@ -75,23 +75,22 @@ console.log(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 );
 
-const BaseHtml = ({ children }: elements.Children) => `
-<!DOCTYPE html>
-<html lang="en">
+const BaseHtml = ({ children }: PropsWithChildren) => (
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>THE BETH STACK</title>
+      <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+      <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
+      <link href="/styles.css" rel="stylesheet" />
+    </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE BETH STACK</title>
-  <script src="https://unpkg.com/htmx.org@1.9.3"></script>
-  <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
-  <link href="/styles.css" rel="stylesheet">
-</head>
+    {children}
+  </html>
+);
 
-${children}
-`;
-
-function TodoItem({ content, completed, id }: Todo) {
+function TodoItem({ content, completed, id }: TodoSelect) {
   return (
     <div class="flex flex-row space-x-3">
       <p>{content}</p>
@@ -114,7 +113,7 @@ function TodoItem({ content, completed, id }: Todo) {
   );
 }
 
-function TodoList({ todos }: { todos: Todo[] }) {
+function TodoList({ todos }: { todos: TodoSelect[] }) {
   return (
     <div>
       {todos.map((todo) => (
