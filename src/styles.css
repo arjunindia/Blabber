@@ -10,3 +10,11 @@
   background-attachment: fixed;
   background-blend-mode: soft-light;
 }
+.bg-signup {
+  background-image: url("/public/signup-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: soft-light;
+}
