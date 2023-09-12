@@ -3,8 +3,20 @@ import { html, PropsWithChildren } from "@elysiajs/html";
 import { db } from "./db";
 import { TodoSelect, todos } from "./db/schema";
 import { eq } from "drizzle-orm";
+import { logger } from "@grotto/logysia";
+import { autoroutes } from "elysia-autoroutes";
+import { staticPlugin } from "@elysiajs/static";
+import "@fontsource/noto-sans";
+import BaseHtml from "./BaseHTML";
 
 const app = new Elysia()
+  .use(logger())
+  .use(
+    autoroutes({
+      routesDir: "./routes",
+    })
+  )
+  .use(staticPlugin())
   .use(html())
   .get("/", ({ html }) =>
     html(
@@ -75,21 +87,6 @@ console.log(
   `🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`
 );
 
-const BaseHtml = ({ children }: PropsWithChildren) => (
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>THE BETH STACK</title>
-      <script src="https://unpkg.com/htmx.org@1.9.3"></script>
-      <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
-      <link href="/styles.css" rel="stylesheet" />
-    </head>
-
-    {children}
-  </html>
-);
-
 function TodoItem({ content, completed, id }: TodoSelect) {
   return (
     <div class="flex flex-row space-x-3">
@@ -137,3 +134,4 @@ function TodoForm() {
     </form>
   );
 }
+export type ElysiaApp = typeof app;

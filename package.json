@@ -7,7 +7,7 @@
     "db:migrate": "bunx drizzle-kit migrate:sqlite",
     "db:push": "bunx drizzle-kit push:sqlite",
     "db:studio": "bunx drizzle-kit studio",
-    "dev": "concurrently \"bun --hot run src/index.tsx\" \"bun run tw:dev\"",
+    "dev": "concurrently \"bun run --hot src/index.tsx\" \"bun run tw:dev\"",
     "tw": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
     "tw:dev": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css --watch"
   },
@@ -16,7 +16,6 @@
     "@tailwindcss/forms": "^0.5.6",
     "@tailwindcss/typography": "^0.5.10",
     "bun-types": "latest",
-    "concurrently": "^8.2.1",
     "drizzle-kit": "^0.19.13",
     "tailwind-content-placeholder": "^0.0.5",
     "tailwindcss": "^3.3.3",
@@ -29,8 +28,13 @@
   "dependencies": {
     "@elysiajs/fn": "^0.6.1",
     "@elysiajs/html": "^0.6.1",
+    "@elysiajs/static": "^0.6.0",
+    "@fontsource/noto-sans": "^5.0.12",
+    "@grotto/logysia": "^0.0.2",
     "@libsql/client": "^0.3.5-pre.1",
+    "concurrently": "^8.2.1",
     "drizzle-orm": "^0.28.6",
-    "elysia": "^0.6.22"
+    "elysia": "^0.6.22",
+    "elysia-autoroutes": "^0.2.2"
   }
 }
