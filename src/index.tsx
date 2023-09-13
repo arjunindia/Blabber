@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { html, PropsWithChildren } from "@elysiajs/html";
 import { db } from "./db";
-import { TodoSelect, todos } from "./db/schema";
+import { TodoSelect, todos } from "./db/schema/todoSchema";
 import { eq } from "drizzle-orm";
 import { logger } from "@grotto/logysia";
 import { autoroutes } from "elysia-autoroutes";

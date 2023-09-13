@@ -3,9 +3,9 @@
   "module": "src/index.tsx",
   "type": "module",
   "scripts": {
-    "db:generate": "bunx drizzle-kit generate:sqlite",
-    "db:migrate": "bunx drizzle-kit migrate:sqlite",
-    "db:push": "bunx drizzle-kit push:sqlite",
+    "db:generate": "npx drizzle-kit generate:sqlite",
+    "db:migrate": "npx drizzle-kit migrate:sqlite",
+    "db:push": "npx drizzle-kit push:sqlite",
     "db:studio": "bunx drizzle-kit studio",
     "dev": "concurrently \"bun run --hot src/index.tsx\" \"bun run tw:dev\"",
     "tw": "bunx tailwindcss -i ./src/styles.css -o ./tailwind-gen/styles.css",
@@ -34,8 +34,10 @@
     "@libsql/client": "^0.3.5-pre.1",
     "@paralleldrive/cuid2": "^2.2.2",
     "concurrently": "^8.2.1",
+    "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.6",
     "elysia": "^0.6.22",
-    "elysia-autoroutes": "^0.2.2"
+    "elysia-autoroutes": "^0.2.2",
+    "libsql": "^0.1.8"
   }
 }

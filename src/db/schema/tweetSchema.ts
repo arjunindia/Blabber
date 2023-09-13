@@ -3,7 +3,7 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 
 export const todos = sqliteTable("tweets", {
-  id: text("id").$defaultFn(createId).primaryKey(),
+  id: text("id").$defaultFn(createId).primaryKey().notNull(),
   content: text("content", { length: 300 }).notNull(),
   replyTo: text("replyTo", { length: 25 }),
   authorId: text("authorId", { length: 25 }).notNull(),
