@@ -45,7 +45,6 @@ export const get = async (context: Context) => {
     <BaseHtml>
       <body class="flex w-full h-screen justify-center bg-background">
         <Sidebar />
-
         <div
           hx-get="/tweets"
           hx-swap="outerHTML"

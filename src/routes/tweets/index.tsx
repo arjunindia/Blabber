@@ -1,8 +1,50 @@
 import type { Context } from "elysia";
 
+const EditTweet = () => (
+  <div class="flex flex-1 gap-6 w-full h-min p-8   rounded-2xl bg-secondary">
+    <img
+      class="rounded-full w-16 h-16"
+      width="64"
+      height="64"
+      src="https://picsum.photos/200"
+    />
+    <div class="flex flex-col gap-2 w-full">
+      <textarea
+        type="text"
+        class="w-full bg-transparent text-text h-32 rounded-2xl"
+        placeholder="What's happening?"
+        maxlength="300"
+        required="true"
+      />
+      <div class="flex flex-row gap-5 mt-4 justify-between">
+        <button class="text-text">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+            />
+          </svg>
+        </button>
+        <button class="text-text px-6 py-3 bg-primary rounded-full">
+          Post
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 export const get = (context: Context) => {
   return (
     <div class="flex flex-col gap-6 flex-[2] py-6 h-min">
+      <EditTweet />
       <Tweet />
       <Tweet />
       <Tweet />
@@ -33,7 +75,7 @@ export const get = (context: Context) => {
 };
 
 const Tweet = () => (
-  <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary">
+  <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary bg-opacity-30">
     <img
       class="rounded-full w-16 h-16"
       width="64"
