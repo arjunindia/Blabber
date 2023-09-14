@@ -18,18 +18,6 @@ const app = new Elysia()
   )
   .use(staticPlugin())
   .use(html())
-  .get("/", ({ html }) =>
-    html(
-      <BaseHtml>
-        <body
-          class="flex w-full h-screen justify-center items-center"
-          hx-get="/todos"
-          hx-swap="innerHTML"
-          hx-trigger="load"
-        />
-      </BaseHtml>
-    )
-  )
   .get("/todos", async () => {
     const data = await db.select().from(todos).all();
     console.log(data);
@@ -90,7 +78,7 @@ console.log(
 function TodoItem({ content, completed, id }: TodoSelect) {
   return (
     <div class="flex flex-row space-x-3">
-      <p>{content}</p>
+      <p class="text-text">{content}</p>
       <input
         type="checkbox"
         checked={completed}
@@ -112,7 +100,7 @@ function TodoItem({ content, completed, id }: TodoSelect) {
 
 function TodoList({ todos }: { todos: TodoSelect[] }) {
   return (
-    <div>
+    <div class="flex-[2] py-6">
       {todos.map((todo) => (
         <TodoItem {...todo} />
       ))}
@@ -135,3 +123,7 @@ function TodoForm() {
   );
 }
 export type ElysiaApp = typeof app;
+export type GetHandler = Parameters<typeof app.get>[1];
+export type PostHandler = Parameters<typeof app.post>[1];
+export type PutHandler = Parameters<typeof app.put>[1];
+export type DelHandler = Parameters<typeof app.delete>[1];

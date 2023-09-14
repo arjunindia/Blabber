@@ -90,7 +90,7 @@ function Form({
 export async function get() {
   return (
     <BaseHtml>
-      <body class="bg-secondary bg-opacity-100 text-text flex items-center bg-login">
+      <body class="bg-secondary bg-opacity-100 text-text flex items-center bg-login min-h-screen">
         <div class="prose max-w-4xl mx-auto p-8 md:p-16 pb-8 rounded-2xl bg-secondary shadow-2xl hover:shadow-lg transition-all">
           <h1 class="text-text">
             Log In To <code safe>{"< Blabber />"}</code> ✨

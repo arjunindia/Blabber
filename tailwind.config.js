@@ -23,6 +23,24 @@ export default {
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
     require("tailwindcss-full-bleed"),
-    require("tailwind-content-placeholder"),
+    require("tailwind-content-placeholder")({
+      bgColor: "#211",
+      animated: true,
+      placeholders: {
+        paragraph: {
+          height: 24, // the height of the container in em
+          rows: [
+            // This class will have 4 rows:
+            [100], // A 100% width row
+            [100], // Another 100% width row
+            [100], // Another 100% width row
+            [100], // Another 100% width row
+            [100], // Another 100% width row
+            [40], // A 40% width row
+            [], // And an empty row, to create separation
+          ],
+        },
+      },
+    }),
   ],
 };

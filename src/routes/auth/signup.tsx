@@ -80,8 +80,8 @@ function Form({
         </button>
         <p class="text-text">
           Already a member?{" "}
-          <a class="text-link" href="/auth/signin">
-            Sign In now!
+          <a class="text-link" href="/auth/login">
+            Login here {"->"}
           </a>
         </p>
       </div>
@@ -92,8 +92,8 @@ function Form({
 export async function get() {
   return (
     <BaseHtml>
-      <body class="bg-secondary bg-opacity-100 text-text flex items-center bg-signup">
-        <div class="prose max-w-4xl mx-auto p-8 md:p-16 pb-8 rounded-2xl bg-secondary shadow-2xl hover:shadow-lg transition-all">
+      <body class="bg-secondary bg-opacity-100 text-text flex items-center h-full bg-signup min-h-screen">
+        <div class="prose max-w-4xl mx-auto p-8 md:p-16 pb-8 rounded-2xl bg-secondary shadow-2xl hover:shadow-lg transition-all ">
           <h1 class="text-text">
             Sign Up for a new <code safe>{"< Blabber />"}</code> Account✨
           </h1>
