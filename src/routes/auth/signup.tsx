@@ -1,12 +1,22 @@
+import { LuciaError } from "lucia";
 import BaseHtml from "../../BaseHTML";
+import { auth } from "./lucia";
+import { Context } from "elysia";
+import { LibsqlError } from "@libsql/client";
 
+type FormContent = {
+  email?: string;
+  username?: string;
+  name?: string;
+  password?: string;
+};
 function Form({
   content = { email: "" },
   errors,
   success = false,
 }: {
-  content?: { email: string };
-  errors?: { email?: string; password?: string };
+  content?: Omit<FormContent, "password">;
+  errors?: FormContent;
   success?: boolean;
 }) {
   return (
@@ -14,11 +24,9 @@ function Form({
       class="mt-8"
       hx-post="/auth/signup"
       hx-swap="outerHTML"
-      hx-target="#login"
       hx-indicator=".loading"
       hx-push-url="true"
       hx-trigger="submit"
-      hx-select="outerHTML"
     >
       <div class="flex flex-col gap-4 ">
         <label class="text-text" for="email">
@@ -35,6 +43,34 @@ function Form({
           value={content.email}
         />
         <div class="text-red-500 text-sm">{errors?.email}</div>
+        <label class="text-text" for="username">
+          Username (unique)
+        </label>
+        <input
+          class="rounded-xl py-3 text-black"
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Username"
+          required="true"
+          hx-validate="true"
+          value={content.username}
+        />
+        <div class="text-red-500 text-sm">{errors?.username}</div>
+        <label class="text-text" for="name">
+          Display Name
+        </label>
+        <input
+          class="rounded-xl py-3 text-black"
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Name"
+          required="true"
+          hx-validate="true"
+          value={content.name}
+        />
+        <div class="text-red-500 text-sm">{errors?.username}</div>
         <label class="text-text" for="password">
           Password
         </label>
@@ -85,6 +121,14 @@ function Form({
           </a>
         </p>
       </div>
+      {success && (
+        <div class="text-text">
+          <p class="text-text">
+            You have successfully signed up! Please check your email to verify
+            your account.
+          </p>
+        </div>
+      )}
     </form>
   );
 }
@@ -108,14 +152,20 @@ export async function get() {
   );
 }
 
-export async function post({
-  body,
-}: {
-  body: { email: string; password: string };
-}) {
-  const { email, password } = body;
-  if (!email || !password) {
+export async function post({ body }: Context) {
+  const { email, username, name, password } = body as {
+    email: string;
+    username: string;
+    name: string;
+    password: string;
+  };
+  if (!email) {
     return <Form errors={{ email: "Email is required" }} content={{ email }} />;
+  }
+  if (!password) {
+    return (
+      <Form content={{ email }} errors={{ password: "Password is required" }} />
+    );
   }
   //regexp for email validation
   const emailRegexp = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
@@ -130,8 +180,57 @@ export async function post({
       />
     );
   }
-  let headers = new Headers();
-  headers.append("Content-Type", "text/html");
-  headers.append("HX-Redirect", "/");
-  return new Response(<Form success />, { headers });
+  if (!username) {
+    return (
+      <Form content={{ email }} errors={{ username: "Username is required" }} />
+    );
+  }
+  try {
+    const user = await auth.createUser({
+      key: {
+        providerId: "email", // auth method
+        providerUserId: email.toLowerCase(), // unique id when using "username" auth method
+        password, // hashed by Lucia
+      },
+      attributes: {
+        email: email.toLowerCase(),
+        username,
+        name,
+        createdAt: new Date(),
+      },
+    });
+    const session = await auth.createSession({
+      userId: user.userId,
+      attributes: {},
+    });
+    const sessionCookie = auth.createSessionCookie(session);
+
+    let headers = new Headers();
+    headers.append("Content-Type", "text/html");
+    headers.append("HX-Redirect", "/");
+    headers.append("Set-Cookie", sessionCookie.serialize());
+    return new Response(<Form success />, { headers });
+  } catch (e) {
+    if (e instanceof LuciaError && e.message === "AUTH_DUPLICATE_KEY_ID") {
+      // user already exists
+      return <Form errors={{ email: "Email already exists" }} />;
+    } else if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
+      return <Form errors={{ email: "Invalid email" }} />;
+    } else if (e instanceof LibsqlError && e.code === "SQLITE_CONSTRAINT") {
+      return (
+        <Form
+          errors={
+            e.message.includes("username")
+              ? { username: "Username already exists!" }
+              : {
+                  email:
+                    "Your email already exists. Try <a href='/auth/login/' class='text-link'>Logging in.</a>",
+                }
+          }
+        />
+      );
+    }
+
+    return <Form errors={{ password: "Server Error Occured!" }} />;
+  }
 }

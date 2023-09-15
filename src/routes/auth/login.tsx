@@ -1,5 +1,7 @@
+import { LuciaError } from "lucia";
 import BaseHtml from "../../BaseHTML";
-
+import { auth } from "./lucia";
+import { Context } from "elysia";
 function Form({
   content = { email: "" },
   errors,
@@ -107,8 +109,8 @@ export async function get() {
 }
 
 export const post = {
-  handler: ({ body }: { body: { email: string; password: string } }) => {
-    const { email, password } = body;
+  handler: async ({ body, request }: Context) => {
+    const { email, password } = body as { email: string; password: string };
     if (!email || !password) {
       return (
         <Form errors={{ email: "Email is required" }} content={{ email }} />
@@ -129,9 +131,33 @@ export const post = {
         />
       );
     }
-    let headers = new Headers();
-    headers.append("Content-Type", "text/html");
-    headers.append("HX-Redirect", "/");
-    return new Response(<Form success />, { headers });
+    try {
+      const key = await auth.useKey("email", email.toLowerCase(), password);
+      const session = await auth.createSession({
+        userId: key.userId,
+        attributes: {},
+      });
+      const sessionCookie = auth.createSessionCookie(session);
+
+      let headers = new Headers();
+      headers.append("Content-Type", "text/html");
+      headers.append("HX-Redirect", "/");
+      headers.append("Set-Cookie", sessionCookie.serialize());
+      return new Response(<Form success />, { headers });
+    } catch (e) {
+      if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
+        // user does not exist
+        return <Form errors={{ email: "Invalid email" }} />;
+      } else if (
+        e instanceof LuciaError &&
+        e.message === "AUTH_INVALID_PASSWORD"
+      ) {
+        // password is incorrect
+        return <Form errors={{ email: "Invalid password" }} />;
+      }
+      return new Response(<Form errors={{ email: "Something went wrong" }} />, {
+        status: 500,
+      });
+    }
   },
 };

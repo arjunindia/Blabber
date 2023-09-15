@@ -6,6 +6,11 @@ declare namespace JSX {
 /// <reference types="lucia" />
 declare namespace Lucia {
   type Auth = import("./lucia.js").Auth;
-  type DatabaseUserAttributes = {};
+  type DatabaseUserAttributes = {
+    email: string;
+    username: string;
+    name: string;
+    createdAt: Date;
+  };
   type DatabaseSessionAttributes = {};
 }
