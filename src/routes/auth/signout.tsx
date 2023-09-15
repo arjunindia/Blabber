@@ -1,5 +1,5 @@
 import { Context } from "elysia";
-import { auth } from "./lucia.js";
+import { auth } from "./lucia";
 
 export async function GET(context: Context) {
   const { request } = context;

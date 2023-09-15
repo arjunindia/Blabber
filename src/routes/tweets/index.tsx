@@ -1,12 +1,12 @@
 import type { Context } from "elysia";
-
-const EditTweet = () => (
+import { auth } from "../auth/lucia";
+const EditTweet = ({ user }: { user: any }) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8  rounded-2xl bg-secondary">
     <img
       class="rounded-full w-16 h-16"
       width="64"
       height="64"
-      src="https://picsum.photos/200"
+      src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${user.username}`}
     />
     <div class="flex flex-col gap-2 w-full">
       <textarea
@@ -41,10 +41,20 @@ const EditTweet = () => (
   </div>
 );
 
-export const get = (context: Context) => {
+export const get = async (context: Context) => {
+  let authenticated = false;
+  let user;
+  const { request } = context;
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate(); // or `authRequest.validateBearerToken()`
+  if (session) {
+    user = session.user;
+    const username = user.username;
+    authenticated = true;
+  }
   return (
     <div class="flex flex-col gap-6 flex-[2] py-6 h-min mr-8">
-      <EditTweet />
+      {authenticated && <EditTweet user={user} />}
       <Tweet />
       <Tweet />
       <Tweet />
@@ -80,7 +90,7 @@ const Tweet = () => (
       class="rounded-full w-16 h-16"
       width="64"
       height="64"
-      src="https://picsum.photos/200"
+      src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=JohnDoe"
     />
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2 items-baseline">
