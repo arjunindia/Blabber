@@ -1,7 +1,7 @@
 import type { Context } from "elysia";
 
 const EditTweet = () => (
-  <div class="flex flex-1 gap-6 w-full h-min p-8   rounded-2xl bg-secondary">
+  <div class="flex flex-1 gap-6 w-full h-min p-8  rounded-2xl bg-secondary">
     <img
       class="rounded-full w-16 h-16"
       width="64"
@@ -43,7 +43,7 @@ const EditTweet = () => (
 
 export const get = (context: Context) => {
   return (
-    <div class="flex flex-col gap-6 flex-[2] py-6 h-min">
+    <div class="flex flex-col gap-6 flex-[2] py-6 h-min mr-8">
       <EditTweet />
       <Tweet />
       <Tweet />

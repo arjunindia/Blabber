@@ -24,7 +24,7 @@ const Sidebar = () => (
   </aside>
 );
 const SideColumn = () => (
-  <aside class="flex-1 p-6">
+  <aside class="flex-1 p-6 hidden xl:block">
     <div class="flex flex-col gap-6 fixed">
       {/* search */}
       <input

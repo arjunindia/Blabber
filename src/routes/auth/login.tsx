@@ -147,17 +147,27 @@ export const post = {
     } catch (e) {
       if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
         // user does not exist
-        return <Form errors={{ email: "Invalid email" }} />;
+        return <Form errors={{ email: "Invalid email" }} content={{ email }} />;
       } else if (
         e instanceof LuciaError &&
         e.message === "AUTH_INVALID_PASSWORD"
       ) {
         // password is incorrect
-        return <Form errors={{ email: "Invalid password" }} />;
+        return (
+          <Form errors={{ password: "Invalid password" }} content={{ email }} />
+        );
       }
-      return new Response(<Form errors={{ email: "Something went wrong" }} />, {
-        status: 500,
-      });
+      return new Response(
+        (
+          <Form
+            errors={{ password: "Something went wrong" }}
+            content={{ email }}
+          />
+        ),
+        {
+          status: 500,
+        }
+      );
     }
   },
 };

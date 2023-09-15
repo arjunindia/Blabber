@@ -70,7 +70,7 @@ function Form({
           hx-validate="true"
           value={content.name}
         />
-        <div class="text-red-500 text-sm">{errors?.username}</div>
+        <div class="text-red-500 text-sm">{errors?.name}</div>
         <label class="text-text" for="password">
           Password
         </label>
@@ -87,7 +87,7 @@ function Form({
         />
         <div class="text-red-500 text-sm">{errors?.password}</div>
         <button
-          class=" text-text bg-primary px-6 py-4 gap-4 rounded-xl mt-6 hover:bg-primaryDark flex w-fit"
+          class=" text-text bg-primary px-6 py-4 gap-4 rounded-xl hover:bg-primaryDark flex w-fit"
           type="submit"
         >
           Sign In
@@ -137,10 +137,8 @@ export async function get() {
   return (
     <BaseHtml>
       <body class="bg-secondary bg-opacity-100 text-text flex items-center h-full bg-signup min-h-screen">
-        <div class="prose max-w-4xl mx-auto p-8 md:p-16 pb-8 rounded-2xl bg-secondary shadow-2xl hover:shadow-lg transition-all ">
-          <h1 class="text-text">
-            Sign Up for a new <code safe>{"< Blabber />"}</code> Account✨
-          </h1>
+        <div class="prose max-w-4xl mx-auto p-8 md:p-8 pb-8 rounded-2xl bg-secondary shadow-2xl hover:shadow-lg transition-all ">
+          <h1 class="text-text">Sign Up for a new Blabber Account✨</h1>
           <p class="text-text" id="login">
             Welcome to Blabber, the best place to share your thoughts with
             others. Sign in to get started!
@@ -213,12 +211,23 @@ export async function post({ body }: Context) {
   } catch (e) {
     if (e instanceof LuciaError && e.message === "AUTH_DUPLICATE_KEY_ID") {
       // user already exists
-      return <Form errors={{ email: "Email already exists" }} />;
+      return (
+        <Form
+          errors={{ email: "Email already exists" }}
+          content={{ username, email, name }}
+        />
+      );
     } else if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
-      return <Form errors={{ email: "Invalid email" }} />;
+      return (
+        <Form
+          errors={{ email: "Invalid email" }}
+          content={{ username, email, name }}
+        />
+      );
     } else if (e instanceof LibsqlError && e.code === "SQLITE_CONSTRAINT") {
       return (
         <Form
+          content={{ username, email, name }}
           errors={
             e.message.includes("username")
               ? { username: "Username already exists!" }
@@ -231,6 +240,11 @@ export async function post({ body }: Context) {
       );
     }
 
-    return <Form errors={{ password: "Server Error Occured!" }} />;
+    return (
+      <Form
+        errors={{ password: "Server Error Occured!" }}
+        content={{ username, email, name }}
+      />
+    );
   }
 }
