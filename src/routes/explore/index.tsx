@@ -34,7 +34,7 @@ export const get = async (context: Context) => {
           <h2 class="text-text font-thin mt-8 text-xl">Our Verified Users</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 flex-wrap gap-4 mt-8">
             {verifiedUsers.map((user) => (
-              <a href={`/users/${user.username}`}>
+              <a href={`/user/${user.username}`}>
                 <div class="flex flex-col items-center justify-start bg-primary bg-opacity-25 rounded-xl shadow-xl hover:shadow-sm transition-all p-4 gap-3 h-full">
                   <img
                     src={
