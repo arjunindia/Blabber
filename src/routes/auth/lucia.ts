@@ -1,5 +1,6 @@
 import { db, client } from "../../db";
 import { libsql } from "@lucia-auth/adapter-sqlite";
+import { env } from "bun";
 import { lucia } from "lucia";
 import { web } from "lucia/middleware";
 
@@ -11,7 +12,8 @@ export const auth = lucia({
     session: "user_session",
   }),
   middleware: web(),
-  env: "DEV", // "PROD" if deployed to HTTPS
+  env: env.NODE_ENV === "production" ? "PROD" : "DEV",
+  // "PROD" if deployed to HTTPS
   sessionCookie: {
     expires: false,
   },
@@ -23,5 +25,4 @@ export const auth = lucia({
     };
   },
 });
-
 export type Auth = typeof auth;
