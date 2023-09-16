@@ -10,6 +10,8 @@ _It may not be the BEST stack, but it is the BETH stack._
 
 ## [HTMX](https://htmx.org/)
 
+The power of Hypermedia 
+
 Also: [tailwind-css](https://tailwindcss.com/), [drizzle](https://orm.drizzle.team/), [hyperscript](https://hyperscript.org/) and [fly.io](https://fly.io/)
 
 _really you can use whatever you like the most_
