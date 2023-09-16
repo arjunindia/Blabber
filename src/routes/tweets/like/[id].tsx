@@ -62,9 +62,7 @@ export const get = async (context: Context) => {
   const { request, body, params } = context;
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();
-  if (!session) {
-    return "Unauthorized, please login again.";
-  }
+
   const { id } = params as { id: string };
   let count = 0;
   try {
@@ -79,6 +77,9 @@ export const get = async (context: Context) => {
   } catch (e) {
     console.log(e);
     count = 0;
+  }
+  if (!session) {
+    return <Button liked={false} id={id} count={count} />;
   }
   try {
     const liked = await db
@@ -107,9 +108,7 @@ export const post = async (context: Context) => {
   const { request, body, params } = context;
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();
-  if (!session) {
-    return "Unauthorized, please login again.";
-  }
+
   const { id } = params as { id: string };
   let count = 0;
   try {
@@ -124,6 +123,9 @@ export const post = async (context: Context) => {
   } catch (e) {
     console.log(e);
     count = 0;
+  }
+  if (!session) {
+    return <Button liked={false} id={id} count={count} />;
   }
   try {
     await db.insert(tweetLikes).values({

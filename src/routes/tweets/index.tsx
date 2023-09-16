@@ -200,9 +200,19 @@ export const get = async (context: Context) => {
   // .leftJoin(tweetLikes, eq(tweets.id, tweetLikes.tweetId));
   return (
     <div class="flex flex-col gap-6 flex-[2] py-6 h-min mx-8" id="tweets">
-      <h1 class="text-text text-2xl pl-8 flex-1 font-bold block sm:hidden">
-        Blabber
-      </h1>
+      <div class="flex justify-between items-center">
+        <h1 class="text-text text-2xl pl-8 flex-1 font-bold block sm:hidden">
+          Blabber
+        </h1>
+        {!authenticated && (
+          <a
+            href="/auth/signup"
+            class="bg-primary p-4 px-8 text-xl hover:bg-primaryDark text-text rounded-full sm:hidden"
+          >
+            Signup
+          </a>
+        )}
+      </div>
       {authenticated && <EditTweet currUser={currUser} />}
       {tweetList.length > 0 ? (
         tweetList.map((tweet) => (
