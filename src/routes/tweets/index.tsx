@@ -5,9 +5,9 @@ import { user } from "../../db/schema/userSchema";
 import { tweets, TweetInsert } from "../../db/schema/tweetSchema";
 import { desc, eq } from "drizzle-orm";
 const EditTweet = ({ currUser }: { currUser: any }) => (
-  <div class="flex flex-1 gap-6 w-full h-min p-8  rounded-2xl bg-secondary">
+  <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary">
     <img
-      class="rounded-full w-16 h-16"
+      class="rounded-full w-8 h-8 sm:w-16 sm:h-16"
       width="64"
       height="64"
       src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${currUser.username}`}
@@ -59,15 +59,15 @@ type TweetProps = {
   createdAt: Date;
 };
 const Tweet = ({ name, username, content, createdAt }: TweetProps) => (
-  <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary bg-opacity-30">
+  <div class="flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30">
     <img
-      class="rounded-full w-16 h-16"
+      class="rounded-full w-8 h-8 sm:w-16 sm:h-16"
       width="64"
       height="64"
       src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${username}`}
     />
     <div class="flex flex-col gap-2">
-      <div class="flex flex-row gap-2 items-baseline">
+      <div class="flex flex-wrap flex-row gap-2 items-baseline">
         <p class="text-text font-bold" safe>
           {name}
         </p>
@@ -158,7 +158,10 @@ export const get = async (context: Context) => {
     .orderBy(desc(tweets.createdAt))
     .innerJoin(user, eq(tweets.authorId, user.id));
   return (
-    <div class="flex flex-col gap-6 flex-[2] py-6 h-min mr-8" id="tweets">
+    <div class="flex flex-col gap-6 flex-[2] py-6 h-min mx-8" id="tweets">
+      <h1 class="text-text text-2xl pl-8 flex-1 font-bold block sm:hidden">
+        Blabber
+      </h1>
       {authenticated && <EditTweet currUser={currUser} />}
       {tweetList.length > 0 ? (
         tweetList.map((tweet) => (
