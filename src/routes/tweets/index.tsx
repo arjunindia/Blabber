@@ -2,8 +2,8 @@ import type { Context } from "elysia";
 import { auth } from "../auth/lucia";
 import { db } from "../../db";
 import { user } from "../../db/schema/userSchema";
-import { tweets, TweetInsert } from "../../db/schema/tweetSchema";
-import { desc, eq } from "drizzle-orm";
+import { tweets, TweetInsert, tweetLikes } from "../../db/schema/tweetSchema";
+import { desc, eq, sql } from "drizzle-orm";
 const EditTweet = ({ currUser }: { currUser: any }) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary">
     <img
@@ -182,7 +182,7 @@ export const get = async (context: Context) => {
     const username = user.username;
     authenticated = true;
   }
-  // get all info as in TweetProps by joining tweets and users
+  // get all info as in TweetProps by joining tweets and users, also get like count
   const tweetList = await db
     .select({
       id: tweets.id,
@@ -192,10 +192,12 @@ export const get = async (context: Context) => {
       username: user.username,
       verified: user.verified,
       verificationMessage: user.verificationMessage,
+      // likeCount: sql`COUNT(${tweetLikes.tweetId})`,
     })
     .from(tweets)
     .orderBy(desc(tweets.createdAt))
     .innerJoin(user, eq(tweets.authorId, user.id));
+  // .leftJoin(tweetLikes, eq(tweets.id, tweetLikes.tweetId));
   return (
     <div class="flex flex-col gap-6 flex-[2] py-6 h-min mx-8" id="tweets">
       <h1 class="text-text text-2xl pl-8 flex-1 font-bold block sm:hidden">

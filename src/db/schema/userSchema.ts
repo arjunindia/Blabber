@@ -19,7 +19,10 @@ export const user_session = sqliteTable("user_session", {
   id: text("id").primaryKey().notNull(),
   user_id: text("user_id")
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   active_expires: blob("active_expires", { mode: "bigint" }).notNull(),
   idle_expires: blob("idle_expires", { mode: "bigint" }).notNull(),
 });
@@ -27,6 +30,9 @@ export const user_key = sqliteTable("user_key", {
   id: text("id").primaryKey().notNull(),
   user_id: text("user_id")
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   hashed_password: text("hashed_password"),
 });

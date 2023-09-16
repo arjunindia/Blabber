@@ -9,7 +9,10 @@ export const tweets = sqliteTable("tweets", {
   replyTo: text("replyTo", { length: 25 }),
   authorId: text("authorId", { length: 25 })
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   createdAt: integer("createdAt", { mode: "timestamp" })
     .$defaultFn(() => new Date())
     .notNull(),
@@ -23,10 +26,16 @@ export const tweetLikes = sqliteTable("tweetLikes", {
   id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
   tweetId: text("tweetId", { length: 25 })
     .notNull()
-    .references(() => tweets.id),
+    .references(() => tweets.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   userId: text("userId", { length: 25 })
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   createdAt: integer("createdAt", { mode: "timestamp" })
     .$defaultFn(() => new Date())
     .notNull(),
