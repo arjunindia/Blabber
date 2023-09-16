@@ -69,7 +69,7 @@ export const get = async (context: Context) => {
         username={tweet.username}
         verified={tweet.verified}
         verificationMessage={tweet.verificationMessage || ""}
-        owner={tweet.username === session.user.username}
+        owner={tweet.username === session?.user?.username}
       />
     ));
     return (
