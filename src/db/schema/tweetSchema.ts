@@ -14,14 +14,13 @@ export const tweets = sqliteTable("tweets", {
     .$defaultFn(() => new Date())
     .notNull(),
   image: text("image"),
-  likes: integer("likes", { mode: "number" }).notNull().default(0),
   isRetweet: integer("isRetweet", { mode: "boolean" }).notNull().default(false),
   retweetOf: text("retweetOf", { length: 25 }),
   retweets: integer("retweets", { mode: "number" }).notNull().default(0),
 });
 
 export const tweetLikes = sqliteTable("tweetLikes", {
-  id: text("id").primaryKey().notNull(),
+  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
   tweetId: text("tweetId", { length: 25 })
     .notNull()
     .references(() => tweets.id),
@@ -35,3 +34,6 @@ export const tweetLikes = sqliteTable("tweetLikes", {
 
 export type TweetInsert = InferInsertModel<typeof tweets>;
 export type TweetSelect = InferSelectModel<typeof tweets>;
+
+export type TweetLikeInsert = InferInsertModel<typeof tweetLikes>;
+export type TweetLikeSelect = InferSelectModel<typeof tweetLikes>;

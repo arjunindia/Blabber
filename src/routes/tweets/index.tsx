@@ -53,12 +53,13 @@ const EditTweet = ({ currUser }: { currUser: any }) => (
   </div>
 );
 type TweetProps = {
+  id: string;
   name: string;
   username: string;
   content: string;
   createdAt: Date;
 };
-const Tweet = ({ name, username, content, createdAt }: TweetProps) => (
+const Tweet = ({ id, name, username, content, createdAt }: TweetProps) => (
   <div class="flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30">
     <img
       class="rounded-full w-8 h-8 sm:w-16 sm:h-16"
@@ -82,7 +83,12 @@ const Tweet = ({ name, username, content, createdAt }: TweetProps) => (
         {content}
       </p>
       <div class="flex flex-row gap-5 mt-4">
-        <button class="text-text">
+        <button
+          class="text-text"
+          hx-trigger="load"
+          hx-get={`/tweets/like/${id}`}
+          hx-swap="outerHTML"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -149,6 +155,7 @@ export const get = async (context: Context) => {
   // get all info as in TweetProps by joining tweets and users
   const tweetList = await db
     .select({
+      id: tweets.id,
       content: tweets.content,
       createdAt: tweets.createdAt,
       name: user.name,
@@ -166,6 +173,7 @@ export const get = async (context: Context) => {
       {tweetList.length > 0 ? (
         tweetList.map((tweet) => (
           <Tweet
+            id={tweet.id}
             content={tweet.content}
             createdAt={tweet.createdAt}
             name={tweet.name}
