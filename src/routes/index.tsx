@@ -27,6 +27,7 @@ const Sidebar = ({ authenticated }: { authenticated: boolean }) => (
       <h1 class="text-text text-2xl pl-8 flex-1 font-bold hidden sm:block">
         Blabber
       </h1>
+
       <div class="flex flex-col gap-6 flex-1">
         <SidebarLink
           icon={
@@ -158,7 +159,7 @@ export const get = async (context: Context) => {
   }
   return (
     <BaseHtml>
-      <body class="flex w-full h-screen justify-center bg-background">
+      <body class="flex w-screen overflow-x-hidden min-h-screen justify-center bg-background">
         <Sidebar authenticated={authenticated} />
         <div
           hx-get="/tweets"

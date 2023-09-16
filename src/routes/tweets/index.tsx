@@ -20,7 +20,18 @@ const EditTweet = ({ currUser }: { currUser: any }) => (
         maxlength="300"
         required="true"
         name="content"
+        _={`
+          on input set :contentvalue to 300 - me.value.length then log :contentvalue then put :contentvalue into #tweetlength
+          if :contentvalue < 0 then
+            add .text-red-500 to #tweetlength
+            remove .text-green-500 from #tweetlength
+          else
+            remove .text-red-500 from #tweetlength
+            add .text-green-500 to #tweetlength
+          end
+        `}
       />
+      <p id="tweetlength" class="ml-auto"></p>
       <div class="flex flex-row gap-5 mt-4 justify-between">
         <button class="text-text">
           <svg
@@ -60,6 +71,7 @@ type TweetProps = {
   createdAt: Date;
   verified: boolean;
   verificationMessage?: string;
+  owner: boolean;
 };
 const Tweet = ({
   id,
@@ -69,6 +81,7 @@ const Tweet = ({
   createdAt,
   verified,
   verificationMessage,
+  owner,
 }: TweetProps) => (
   <div class="flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30">
     <img
@@ -77,8 +90,8 @@ const Tweet = ({
       height="64"
       src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${username}`}
     />
-    <div class="flex flex-col gap-2">
-      <div class="flex flex-wrap flex-row gap-2 items-baseline">
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex flex-wrap flex-row gap-2 items-baseline w-full">
         <p class="text-text font-bold" safe>
           {name}
         </p>
@@ -108,6 +121,37 @@ const Tweet = ({
         <p class="text-text text-sm" safe>
           {new Date(createdAt).toLocaleString()}
         </p>
+        {owner && (
+          <div class="popover ml-auto">
+            <label class="trigger text-text btn w-min p-0" tabindex="0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                />
+              </svg>
+            </label>
+            <div class="content top-center" tabindex="0">
+              <div class="arrow "></div>
+              <div class=" text-sm ">
+                <button
+                  class="btn bg-danger-900 text-slate-100"
+                  hx-delete={`/tweets/${id}`}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <p class="text-text" safe>
         {content}
@@ -173,7 +217,7 @@ const Tweet = ({
 
 export const get = async (context: Context) => {
   let authenticated = false;
-  let currUser;
+  let currUser: any;
   const { request } = context;
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate(); // or `authRequest.validateBearerToken()`
@@ -224,6 +268,7 @@ export const get = async (context: Context) => {
             username={tweet.username}
             verified={tweet.verified}
             verificationMessage={tweet.verificationMessage || ""}
+            owner={tweet.username === currUser.username}
           />
         ))
       ) : (

@@ -24,6 +24,7 @@ export default {
     require("@tailwindcss/typography"),
     require("tailwindcss-full-bleed"),
     require("@tailwindcss/forms"),
+    require("@sira-ui/tailwind"),
     require("tailwind-content-placeholder")({
       bgColor: "#211",
       animated: true,
