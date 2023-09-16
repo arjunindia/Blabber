@@ -23,6 +23,7 @@ export default {
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
     require("tailwindcss-full-bleed"),
+    require("@tailwindcss/forms"),
     require("tailwind-content-placeholder")({
       bgColor: "#211",
       animated: true,
