@@ -118,7 +118,7 @@ export const get = async (context: Context) => {
             username={tweet.username}
             verified={tweet.verified}
             verificationMessage={tweet.verificationMessage || ""}
-            owner={tweet.username === currUser.username}
+            owner={tweet.username === currUser?.username}
           />
         ))
       ) : (
