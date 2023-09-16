@@ -1,7 +1,7 @@
 import { Context } from "elysia";
 import { auth } from "./lucia";
 
-export async function GET(context: Context) {
+export async function get(context: Context) {
   const { request } = context;
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();

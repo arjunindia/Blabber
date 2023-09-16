@@ -1,20 +1,25 @@
 import type { Context } from "elysia";
 import { auth } from "../auth/lucia";
-const EditTweet = ({ user }: { user: any }) => (
+import { db } from "../../db";
+import { user } from "../../db/schema/userSchema";
+import { tweets, TweetInsert } from "../../db/schema/tweetSchema";
+import { desc, eq } from "drizzle-orm";
+const EditTweet = ({ currUser }: { currUser: any }) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8  rounded-2xl bg-secondary">
     <img
       class="rounded-full w-16 h-16"
       width="64"
       height="64"
-      src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${user.username}`}
+      src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${currUser.username}`}
     />
     <div class="flex flex-col gap-2 w-full">
       <textarea
         type="text"
-        class="w-full bg-transparent text-text h-32 rounded-2xl"
+        class="w-full bg-transparent text-text h-32 rounded-xl"
         placeholder="What's happening?"
         maxlength="300"
         required="true"
+        name="content"
       />
       <div class="flex flex-row gap-5 mt-4 justify-between">
         <button class="text-text">
@@ -33,74 +38,48 @@ const EditTweet = ({ user }: { user: any }) => (
             />
           </svg>
         </button>
-        <button class="text-text px-6 py-3 bg-primary rounded-full">
+        <button
+          class="text-text px-6 py-3 bg-primary rounded-full"
+          hx-post="/tweets"
+          hx-swap="outerHTML"
+          hx-include="textarea"
+          hx-target="#tweet-error"
+        >
           Post
         </button>
       </div>
+      <p class="text-red-500 text-sm" id="tweet-error"></p>
     </div>
   </div>
 );
-
-export const get = async (context: Context) => {
-  let authenticated = false;
-  let user;
-  const { request } = context;
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate(); // or `authRequest.validateBearerToken()`
-  if (session) {
-    user = session.user;
-    const username = user.username;
-    authenticated = true;
-  }
-  return (
-    <div class="flex flex-col gap-6 flex-[2] py-6 h-min mr-8">
-      {authenticated && <EditTweet user={user} />}
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-      <Tweet />
-    </div>
-  );
+type TweetProps = {
+  name: string;
+  username: string;
+  content: string;
+  createdAt: Date;
 };
-
-const Tweet = () => (
+const Tweet = ({ name, username, content, createdAt }: TweetProps) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary bg-opacity-30">
     <img
       class="rounded-full w-16 h-16"
       width="64"
       height="64"
-      src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=JohnDoe"
+      src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${username}`}
     />
     <div class="flex flex-col gap-2">
       <div class="flex flex-row gap-2 items-baseline">
-        <p class="text-text font-bold">John Doe</p>
-        <p class="text-text font-thin">@JohnDoe</p>
-        <p class="text-text text-sm">2h</p>
+        <p class="text-text font-bold" safe>
+          {name}
+        </p>
+        <p class="text-text font-thin" safe>
+          @{username}
+        </p>
+        <p class="text-text text-sm" safe>
+          {new Date(createdAt).toLocaleString()}
+        </p>
       </div>
-      <p class="text-text">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam, quibusdam
-        doloremque. Quisquam, veniam. Quisquam, veniam.
+      <p class="text-text" safe>
+        {content}
       </p>
       <div class="flex flex-row gap-5 mt-4">
         <button class="text-text">
@@ -155,3 +134,72 @@ const Tweet = () => (
     </div>
   </div>
 );
+
+export const get = async (context: Context) => {
+  let authenticated = false;
+  let currUser;
+  const { request } = context;
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate(); // or `authRequest.validateBearerToken()`
+  if (session) {
+    currUser = session.user;
+    const username = user.username;
+    authenticated = true;
+  }
+  // get all info as in TweetProps by joining tweets and users
+  const tweetList = await db
+    .select({
+      content: tweets.content,
+      createdAt: tweets.createdAt,
+      name: user.name,
+      username: user.username,
+    })
+    .from(tweets)
+    .orderBy(desc(tweets.createdAt))
+    .innerJoin(user, eq(tweets.authorId, user.id));
+  return (
+    <div class="flex flex-col gap-6 flex-[2] py-6 h-min mr-8" id="tweets">
+      {authenticated && <EditTweet currUser={currUser} />}
+      {tweetList.length > 0 ? (
+        tweetList.map((tweet) => (
+          <Tweet
+            content={tweet.content}
+            createdAt={tweet.createdAt}
+            name={tweet.name}
+            username={tweet.username}
+          />
+        ))
+      ) : (
+        <p class="text-text">No tweets yet</p>
+      )}
+    </div>
+  );
+};
+
+export const post = async (context: Context) => {
+  const { request, body } = context;
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  if (!session) {
+    return "Unauthorized, please login again.";
+  }
+  const { content } = body as { content: string };
+  if (!content) {
+    return "Content is required";
+  }
+  const tweet: TweetInsert = {
+    content,
+    authorId: session.user.userId,
+  };
+  try {
+    await db.insert(tweets).values(tweet);
+    return new Response(await get(context), {
+      headers: {
+        "HX-Retarget": "#tweets",
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return "Internal Server Error";
+  }
+};

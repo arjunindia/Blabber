@@ -61,7 +61,6 @@ export const get = async (context: Context) => {
   let authenticated: boolean = false;
   const authRequest = auth.handleRequest(request);
   const session = await authRequest.validate();
-  console.log(session);
   if (session) {
     authenticated = true;
   }
