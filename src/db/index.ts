@@ -4,7 +4,6 @@ import * as schema from "./schema/todoSchema.ts";
 import * as tweetSchema from "./schema/tweetSchema.ts";
 import * as userSchema from "./schema/userSchema.ts";
 const fullSchema = {
-  ...schema,
   ...tweetSchema,
   ...userSchema,
 };

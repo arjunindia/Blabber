@@ -11,4 +11,5 @@ export default {
   },
   verbose: true,
   strict: true,
+  out: "./src/db/generated",
 } satisfies Config;

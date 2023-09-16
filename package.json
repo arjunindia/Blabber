@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "db:generate": "bunx drizzle-kit generate:sqlite",
-    "db:migrate": "bunx drizzle-kit migrate:sqlite",
+    "db:migrate": "bun run ./src/db/migrations.ts",
+    "db:automigrate": "bun run db:generate && bun run db:migrate",
     "db:push": "bunx drizzle-kit push:sqlite",
     "db:studio": "bunx drizzle-kit studio",
     "dev": "concurrently \"bun run --hot src/index.tsx\" \"bun run tw:dev\"",

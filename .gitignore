@@ -5,6 +5,7 @@ tailwind-gen
 
 sqlite.db
 
+src/db/generated
 
 # Logs
 
