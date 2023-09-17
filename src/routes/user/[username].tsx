@@ -76,7 +76,11 @@ export const get = async (context: Context) => {
       <BaseHtml>
         <body class="flex w-screen overflow-x-hidden min-h-screen justify-center bg-background">
           <Sidebar authenticated={authenticated} />
-          <Profile user={siteUser} tweetList={tweetList} />
+          <Profile
+            user={siteUser}
+            tweetList={tweetList}
+            owner={username === session?.user?.username}
+          />
           <SideColumn />
         </body>
       </BaseHtml>
@@ -89,18 +93,33 @@ export const get = async (context: Context) => {
   }
 };
 
-const Profile = ({ user, tweetList }: { user: User; tweetList: any }) => {
+const Profile = ({
+  user,
+  tweetList,
+  owner,
+}: {
+  user: User;
+  tweetList: any;
+  owner: boolean;
+}) => {
   return (
     <div class="flex-[2] py-6 px-6">
       <div class="flex flex-col mt-8 gap-5 bg-secondary p-8 rounded-xl w-full min-h-[250px]">
-        <img
-          src={
-            user.avatar ||
-            `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${user.username}`
-          }
-          alt="profile"
-          class="rounded-full h-24 w-24 object-cover self-start"
-        />
+        <div class="flex justify-between">
+          <img
+            src={
+              user.avatar ||
+              `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${user.username}`
+            }
+            alt="profile"
+            class="rounded-full h-24 w-24 object-cover self-start"
+          />
+          {owner && (
+            <a href={`/user/edit/${user?.id}`} class="btn bg-text">
+              Edit Profile
+            </a>
+          )}
+        </div>
         <div class="ml-4 self-start">
           <div class="flex gap-3">
             <h1 class="text-text font-bold text-3xl">{user.name}</h1>
@@ -148,7 +167,11 @@ const Profile = ({ user, tweetList }: { user: User; tweetList: any }) => {
               </p>
             )}
             {user.website && (
-              <a class="flex items-center py-2 gap-2" href={user.website}>
+              <a
+                class="flex items-center py-2 gap-2"
+                href={user.website}
+                target="_blank"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
