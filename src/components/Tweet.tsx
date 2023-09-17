@@ -92,7 +92,10 @@ export const Tweet = ({
           </div>
         )}
       </div>
-      <p class="text-text break-words max-w-prose" safe>
+      <p
+        class="mr-4 text-text break-words break-keep max-w-[15rem] md:max-w-xs lg:max-w-sm xl:max-w-md 2xl:max-w-prose"
+        safe
+      >
         {content}
       </p>
       <div class="flex flex-row gap-5 mt-4">
