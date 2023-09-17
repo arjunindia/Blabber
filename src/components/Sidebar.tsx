@@ -20,9 +20,10 @@ const SidebarLink = ({
 export const Sidebar = ({ authenticated }: { authenticated: boolean }) => (
   <aside class="flex-[0.3] pt-16 sm:flex-1 sm:pt-6 sm:pl-8 h-full w-full">
     <div class="flex flex-col justify-between h-full fixed">
-      <h1 class="text-text text-2xl pl-8 flex-1 font-bold hidden sm:block">
-        Blabber
-      </h1>
+      <div class=" pl-8 flex-1 font-bold hidden sm:flex gap-2">
+        <img src="/public/icon.jpg" alt="logo" class="w-8 h-8" />
+        <h1 class="text-text text-2xl ">Blabber</h1>
+      </div>
 
       <div class="flex flex-col gap-6 flex-1">
         <SidebarLink
