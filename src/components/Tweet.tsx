@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "@elysiajs/html";
 export type TweetProps = {
   id: string;
   name: string;
@@ -8,6 +9,81 @@ export type TweetProps = {
   verificationMessage?: string;
   owner: boolean;
 };
+
+const DropDown = ({ children }: PropsWithChildren) => (
+  <>
+    <div class="flex justify-center ml-auto">
+      <div
+        x-data="{
+                  open: false,
+                  toggle() {
+                      if (this.open) {
+                          return this.close()
+                      }
+    
+                      this.$refs.button.focus()
+    
+                      this.open = true
+                  },
+                  close(focusAfter) {
+                      if (! this.open) return
+    
+                      this.open = false
+    
+                      focusAfter && focusAfter.focus()
+                  }
+              }"
+        {...{
+          "x-on:keydown.escape.prevent.stop": "close($refs.button)",
+          "x-on:focusin.window":
+            "! $refs.panel.contains($event.target) && close()",
+        }}
+        x-id="['dropdown-button']"
+        class="relative inline-block"
+      >
+        <button
+          x-ref="button"
+          x-on:click="toggle()"
+          {...{
+            ":aria-expanded": "open",
+            ":aria-controls": "$id('dropdown-button')",
+          }}
+          type="button"
+          class="inline-flex gap-2 text-text rounded-full p-1 text-center text-sm font-medium shadow-sm transition-all  focus:ring focus:ring-gray-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+            />
+          </svg>
+        </button>
+
+        <div
+          x-ref="panel"
+          x-show="open"
+          {...{
+            "x-transition.origin.top.left x-on:click.outside":
+              "close($refs.button)",
+            ":id": "$id('dropdown-button')",
+          }}
+          class="absolute left-0 z-10 mt-2 rounded-lg border border-gray-100 text-left text-sm shadow-lg w-fit"
+        >
+          <div class="p-1">{children}</div>
+        </div>
+      </div>
+    </div>
+  </>
+);
+
 export const Tweet = ({
   id,
   name,
@@ -61,35 +137,14 @@ export const Tweet = ({
           {new Date(createdAt).toLocaleString()}
         </p>
         {owner && (
-          <div class="popover ml-auto">
-            <label class="trigger text-text btn w-min p-0" tabindex="0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                />
-              </svg>
-            </label>
-            <div class="content top-center" tabindex="0">
-              <div class="arrow "></div>
-              <div class=" text-sm ">
-                <button
-                  class="btn bg-danger-900 text-slate-100"
-                  hx-delete={`/tweets/${id}`}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
+          <DropDown>
+            <button
+              class="btn bg-red-900 text-slate-100 px-4 py-2 rounded-md"
+              hx-delete={`/tweets/${id}`}
+            >
+              Delete
+            </button>
+          </DropDown>
         )}
       </div>
       <p

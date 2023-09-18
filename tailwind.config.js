@@ -12,6 +12,8 @@ export default {
         background: "#050000",
         primary: "#633303",
         primaryDark: "#4e2700",
+        primaryWhite: "#f4f4f4",
+        primaryWhiteText: "#242424",
         secondary: "#261212",
         accent: "#f4f406",
       },
@@ -24,7 +26,7 @@ export default {
     require("@tailwindcss/typography"),
     require("tailwindcss-full-bleed"),
     require("@tailwindcss/forms"),
-    require("@sira-ui/tailwind"),
+    // require("@sira-ui/tailwind"),
     require("tailwind-content-placeholder")({
       bgColor: "#211",
       animated: true,

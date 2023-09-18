@@ -115,7 +115,10 @@ const Profile = ({
             class="rounded-full h-24 w-24 object-cover self-start"
           />
           {owner && (
-            <a href={`/user/edit/${user?.id}`} class="btn bg-text">
+            <a
+              href={`/user/edit/${user?.id}`}
+              class="px-6 py-2 text-text border-white border h-10 rounded-full hover:bg-primaryWhite hover:text-primaryWhiteText hover:text-white self-center"
+            >
               Edit Profile
             </a>
           )}
