@@ -5,6 +5,7 @@ import { user } from "../../db/schema/userSchema";
 import { tweets, TweetInsert, tweetLikes } from "../../db/schema/tweetSchema";
 import { desc, eq, sql } from "drizzle-orm";
 import { Tweet } from "../../components/Tweet";
+import { alias } from "drizzle-orm/sqlite-core";
 const EditTweet = ({ currUser }: { currUser: any }) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary">
     <img
@@ -76,7 +77,10 @@ export const get = async (context: Context) => {
     const username = user.username;
     authenticated = true;
   }
-  // get all info as in TweetProps by joining tweets and users, also get like count
+  // use self joins to get the reply message using replyTo (which is the id of the tweet it replies to)
+
+  const replies = alias(tweets, "replies");
+  const replyAuthor = alias(user, "replyAuthor");
   const tweetList = await db
     .select({
       id: tweets.id,
@@ -86,12 +90,14 @@ export const get = async (context: Context) => {
       username: user.username,
       verified: user.verified,
       verificationMessage: user.verificationMessage,
-      // likeCount: sql`COUNT(${tweetLikes.tweetId})`,
+      replyMessage: replies.content,
+      replyUser: replyAuthor.username,
     })
     .from(tweets)
     .orderBy(desc(tweets.createdAt))
-    .innerJoin(user, eq(tweets.authorId, user.id));
-  // .leftJoin(tweetLikes, eq(tweets.id, tweetLikes.tweetId));
+    .innerJoin(user, eq(tweets.authorId, user.id))
+    .leftJoin(replies, eq(tweets.replyTo, replies.id))
+    .leftJoin(replyAuthor, eq(replies.authorId, replyAuthor.id));
   return (
     <div class="flex flex-col gap-6 flex-[2] py-6 h-min mx-8" id="tweets">
       <div class="flex justify-between items-center">
@@ -119,6 +125,8 @@ export const get = async (context: Context) => {
             verified={tweet.verified}
             verificationMessage={tweet.verificationMessage || ""}
             owner={tweet.username === currUser?.username}
+            ReplyMessage={tweet.replyMessage || undefined}
+            ReplyUser={tweet.replyUser || undefined}
           />
         ))
       ) : (
@@ -140,7 +148,7 @@ export const post = async (context: Context) => {
     return "Content is required";
   }
   const tweet: TweetInsert = {
-    content,
+    content: content,
     authorId: session.user.userId,
   };
   try {

@@ -76,6 +76,7 @@ const EditTweet = ({
         maxlength="300"
         required="true"
         name="content"
+        id="replyArea"
         _={`
               on input set :contentvalue to 300 - me.value.length then log :contentvalue then put :contentvalue into #tweetlength
               if :contentvalue < 0 then
@@ -109,7 +110,7 @@ const EditTweet = ({
           class="text-text px-6 py-3 bg-primary rounded-full"
           hx-post={`/tweets/reply/${replyId}`}
           hx-swap="outerHTML"
-          hx-include="textarea"
+          hx-include="#replyArea"
           hx-target="#tweet-error"
         >
           Post

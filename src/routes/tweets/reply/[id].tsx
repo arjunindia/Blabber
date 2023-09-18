@@ -3,6 +3,7 @@ import { auth } from "../../auth/lucia";
 import { ReplyModal } from "../../../components/Modal";
 import { TweetInsert, tweets } from "../../../db/schema/tweetSchema";
 import { db } from "../../../db";
+import { get as getTweets } from "../index";
 
 export const get = async (context: Context) => {
   const { request, params } = context;
@@ -39,7 +40,7 @@ export const post = async (context: Context) => {
   };
   try {
     await db.insert(tweets).values(tweet);
-    return new Response(await get(context), {
+    return new Response(await getTweets(context), {
       headers: {
         "HX-Retarget": "#tweets",
       },

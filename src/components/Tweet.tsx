@@ -10,6 +10,8 @@ export interface TweetProps {
   owner: boolean;
   noInteraction?: boolean;
   className?: string;
+  ReplyMessage?: string;
+  ReplyUser?: string;
 }
 
 const DropDown = ({ children }: PropsWithChildren) => (
@@ -97,6 +99,8 @@ export const Tweet = ({
   owner,
   noInteraction,
   className,
+  ReplyMessage,
+  ReplyUser,
 }: TweetProps) => (
   <>
     <div
@@ -109,6 +113,19 @@ export const Tweet = ({
         src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${username}`}
       />
       <div class="flex flex-col gap-2 w-full">
+        {ReplyMessage && ReplyUser && (
+          <div class="flex gap-2 items-center">
+            <div class="flex flex-row gap-2 items-baseline">
+              <span class="text-text">Replying to: </span>
+              <a class="text-text font-bold" href={`/user/${ReplyUser}`} safe>
+                @{ReplyUser}
+              </a>
+            </div>
+            <p class="text-text text-sm truncate max-w-[10vw]" safe>
+              {ReplyMessage}
+            </p>
+          </div>
+        )}
         <div class="flex flex-wrap flex-row gap-2 items-baseline w-full">
           <a class="text-text font-bold" href={`/user/${username}`} safe>
             {name}
