@@ -7,6 +7,7 @@ import { user } from "../../db/schema/userSchema";
 import { desc, eq } from "drizzle-orm";
 import { Tweet, TweetProps } from "../../components/Tweet";
 import { tweets } from "../../db/schema/tweetSchema";
+import { Modal, ReplyModal } from "../../components/Modal";
 
 type User = {
   id: string;
@@ -117,7 +118,7 @@ const Profile = ({
           {owner && (
             <a
               href={`/user/edit/${user?.id}`}
-              class="px-6 py-2 text-text border-white border h-10 rounded-full hover:bg-primaryWhite hover:text-primaryWhiteText hover:text-white self-center"
+              class="px-6 py-2 text-text border-white border h-10 rounded-full hover:bg-primaryWhite hover:text-primaryWhiteText  self-center"
             >
               Edit Profile
             </a>
