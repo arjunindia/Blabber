@@ -104,7 +104,9 @@ export const Tweet = ({
 }: TweetProps) => (
   <>
     <div
-      class={`flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30 ${className}`}
+      class={`tweet flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30 ${className} cursor-pointer`}
+      data-id={id}
+      onclick={`const t=["A","BUTTON","SVG","PATH"];t.includes(event.target.tagName.toUpperCase())||(window.location.href='/tweet/${id}')`}
     >
       <img
         class="rounded-full w-8 h-8 sm:w-16 sm:h-16"
@@ -182,6 +184,7 @@ export const Tweet = ({
               hx-trigger="load"
               hx-get={`/tweets/like/${id}`}
               hx-swap="outerHTML"
+              hx-push-url="false"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

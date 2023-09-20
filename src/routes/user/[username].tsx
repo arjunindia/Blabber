@@ -8,6 +8,7 @@ import { desc, eq } from "drizzle-orm";
 import { Tweet, TweetProps } from "../../components/Tweet";
 import { tweets } from "../../db/schema/tweetSchema";
 import { Modal, ReplyModal } from "../../components/Modal";
+import { alias } from "drizzle-orm/sqlite-core";
 
 type User = {
   id: string;
@@ -47,6 +48,8 @@ export const get = async (context: Context) => {
         .from(user)
         .where(eq(user.username, username))
     )[0];
+    const replyTable = alias(tweets, "replyTable");
+    const replyUser = alias(user, "replyUser");
     const tweetFetch = await db
       .select({
         id: tweets.id,
@@ -56,11 +59,16 @@ export const get = async (context: Context) => {
         username: user.username,
         verified: user.verified,
         verificationMessage: user.verificationMessage,
+        replyMessage: replyTable.content,
+        replyUser: replyUser.username,
       })
       .from(tweets)
       .where(eq(tweets.authorId, siteUser.id))
       .innerJoin(user, eq(tweets.authorId, user.id))
-      .orderBy(desc(tweets.createdAt));
+      .orderBy(desc(tweets.createdAt))
+      .leftJoin(replyTable, eq(replyTable.id, tweets.replyTo))
+      .leftJoin(replyUser, eq(replyTable.authorId, replyUser.id));
+
     const tweetList = tweetFetch.map((tweet) => (
       <Tweet
         id={tweet.id}
@@ -71,6 +79,8 @@ export const get = async (context: Context) => {
         verified={tweet.verified}
         verificationMessage={tweet.verificationMessage || ""}
         owner={tweet.username === session?.user?.username}
+        ReplyMessage={tweet.replyMessage || undefined}
+        ReplyUser={tweet.replyUser || undefined}
       />
     ));
     return (

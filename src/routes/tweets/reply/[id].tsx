@@ -40,10 +40,9 @@ export const post = async (context: Context) => {
   };
   try {
     await db.insert(tweets).values(tweet);
-    return new Response(await getTweets(context), {
+    return new Response("Reply Added!", {
       headers: {
-        "HX-Retarget": "#tweets",
-        "HX-Reswap": "outerHTML",
+        "HX-Redirect": "/tweet/" + id,
       },
     });
   } catch (e) {
