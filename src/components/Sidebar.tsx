@@ -9,23 +9,21 @@ const SidebarLink = ({
 }) => (
   <a
     href={href}
-    class="p-4 px-4 sm:px-8 text-xl text-text flex gap-3 items-center"
+    class="p-4 sm:px-8 h-min text-xl text-text flex sm:gap-3 items-center hover:bg-primaryDark rounded-lg"
   >
     {icon}
-    <span class="text-text text-xl font-bold invisible sm:visible">
-      {content}
-    </span>
+    <span class="text-text text-xl font-bold hidden sm:block">{content}</span>
   </a>
 );
 export const Sidebar = ({ authenticated }: { authenticated: boolean }) => (
-  <aside class="flex-[0.3] pt-16 sm:flex-1 sm:pt-6 sm:pl-8 h-full w-full">
+  <aside class="flex-[0] pt-16 sm:flex-1 sm:pt-6 sm:pl-8 h-full w-full">
     <div class="flex flex-col justify-between h-full fixed">
       <div class=" pl-8 flex-1 font-bold hidden sm:flex gap-2">
         <img src="/public/icon.jpg" alt="logo" class="w-8 h-8" />
         <h1 class="text-text text-2xl ">Blabber</h1>
       </div>
 
-      <div class="flex flex-col gap-6 flex-1">
+      <div class="w-screen sm:w-auto flex flex-row sm:flex-col justify-evenly items-center gap-6 sm:flex-1 absolute sm:static bottom-0 sm:inset-0 z-50 bg-primary sm:bg-transparent h-24 -translate-y-1/2">
         <SidebarLink
           icon={
             <svg
@@ -101,8 +99,6 @@ export const Sidebar = ({ authenticated }: { authenticated: boolean }) => (
             Post
           </a>
         )}
-      </div>
-      <div class="flex-1 mt-5">
         {authenticated && (
           <SidebarLink
             content="Sign Out"

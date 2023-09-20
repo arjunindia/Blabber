@@ -114,14 +114,12 @@ export const Tweet = ({
       />
       <div class="flex flex-col gap-2 w-full">
         {ReplyMessage && ReplyUser && (
-          <div class="flex gap-2 items-center">
-            <div class="flex flex-row gap-2 items-baseline">
-              <span class="text-text">Replying to: </span>
-              <a class="text-text font-bold" href={`/user/${ReplyUser}`} safe>
-                @{ReplyUser}
-              </a>
-            </div>
-            <p class="text-text text-sm truncate max-w-[10vw]" safe>
+          <div class="flex flex-row gap-2 items-baseline max-w-[70vw]">
+            <span class="text-text">Replying to: </span>
+            <a class="text-text font-bold" href={`/user/${ReplyUser}`} safe>
+              @{ReplyUser}
+            </a>
+            <p class="text-text text-sm truncate max-w-[30vw] break-all" safe>
               {ReplyMessage}
             </p>
           </div>
