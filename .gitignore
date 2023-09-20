@@ -5,6 +5,8 @@ tailwind-gen
 
 sqlite.db
 
+BACKUP.sql
+
 src/db/generated
 
 # Logs

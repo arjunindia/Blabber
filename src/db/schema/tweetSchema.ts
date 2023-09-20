@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, numeric, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { createId } from "@paralleldrive/cuid2";
 import { user } from "./userSchema";
@@ -21,24 +21,23 @@ export const tweets = sqliteTable("tweets", {
   retweetOf: text("retweetOf", { length: 25 }),
   retweets: integer("retweets", { mode: "number" }).notNull().default(0),
 });
-
 export const tweetLikes = sqliteTable("tweetLikes", {
   id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
-  tweetId: text("tweetId", { length: 25 })
+  tweetId: numeric("tweetId")
     .notNull()
     .references(() => tweets.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
-  userId: text("userId", { length: 25 })
+  userId: numeric("userId")
     .notNull()
     .references(() => user.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
   createdAt: integer("createdAt", { mode: "timestamp" })
-    .$defaultFn(() => new Date())
-    .notNull(),
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
 export type TweetInsert = InferInsertModel<typeof tweets>;

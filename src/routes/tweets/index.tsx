@@ -156,6 +156,7 @@ export const post = async (context: Context) => {
     return new Response(await get(context), {
       headers: {
         "HX-Retarget": "#tweets",
+        "HX-Reswap": "outerHTML",
       },
     });
   } catch (e) {

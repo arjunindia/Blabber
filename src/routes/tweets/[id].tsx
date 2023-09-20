@@ -20,6 +20,7 @@ export const del = async (context: Context) => {
     return new Response(await get(context), {
       headers: {
         "HX-Retarget": "#tweets",
+        "HX-Reswap": "outerHTML",
       },
     });
   } catch (e) {
