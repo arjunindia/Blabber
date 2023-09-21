@@ -21,6 +21,7 @@ export const del = async (context: Context) => {
       headers: {
         "HX-Retarget": "#tweets",
         "HX-Reswap": "outerHTML",
+        "HX-Trigger": "tweetDelete",
       },
     });
   } catch (e) {

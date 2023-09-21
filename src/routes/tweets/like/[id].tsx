@@ -16,7 +16,7 @@ const Button = ({
   if (liked) {
     return (
       <button
-        class="text-text flex items-center gap-1"
+        class="text-text flex items-center gap-2 pl-1"
         hx-delete={`/tweets/like/${id}`}
         hx-swap="outerHTML"
       >

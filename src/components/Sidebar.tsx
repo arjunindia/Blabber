@@ -82,7 +82,7 @@ export const Sidebar = ({ authenticated }: { authenticated: boolean }) => (
             </svg>
           }
           content="Search"
-          href="/search"
+          href="/search?q=hello"
         />
         {!authenticated ? (
           <a

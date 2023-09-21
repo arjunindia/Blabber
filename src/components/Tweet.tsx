@@ -88,6 +88,37 @@ const DropDown = ({ children }: PropsWithChildren) => (
     </div>
   </>
 );
+function getTimeDifferenceDescription(timestamp: number): string {
+  const now = Date.now();
+  const difference = now - timestamp;
+
+  if (difference <= 0) {
+    return "now";
+  }
+
+  const seconds = Math.floor(difference / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30); // Approximate number of days in a month
+  const years = Math.floor(months / 12);
+
+  if (years >= 1) {
+    return `${years}y`;
+  } else if (months >= 1) {
+    return `${months}mo`;
+  } else if (days >= 1) {
+    return `${days}d`;
+  } else if (hours >= 1) {
+    return `${hours}h`;
+  } else if (minutes >= 1) {
+    return `${minutes}min`;
+  } else if (seconds < 5) {
+    return `now`;
+  } else {
+    return `${seconds}s`;
+  }
+}
 
 export const Tweet = ({
   id,
@@ -164,7 +195,8 @@ export const Tweet = ({
             @{username}
           </a>
           <p class="text-text text-sm" safe>
-            {new Date(createdAt).toLocaleString()}
+            {/* hour, day, month or year only eg: 1h,2min,now,1d,1mo,12mo,1y */}
+            {getTimeDifferenceDescription(createdAt.getTime())}
           </p>
           {owner && (
             <DropDown>
