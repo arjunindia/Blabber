@@ -140,7 +140,11 @@ export const get = async (context: Context) => {
             ReplyUser={tweet[0].ReplyUser || ""}
             ReplyId={tweet[0].replyId || ""}
             owner={session && session?.user?.username === tweet[0].username}
-            images={tweet[0].images ? (tweet[0].images as [any]) : undefined}
+            images={
+              tweet[0].images
+                ? (JSON.parse(tweet[0].images) as [any])
+                : undefined
+            }
           />
           <div class="flex flex-col gap-4">
             <h1 class="text-text text-2xl font-bold mt-6">Replies</h1>
@@ -162,7 +166,11 @@ export const get = async (context: Context) => {
                 ReplyUser={reply.ReplyUser || ""}
                 ReplyId={reply.replyId || ""}
                 owner={session && session?.user?.username === reply.username}
-                images={reply.images ? (reply.images as [any]) : undefined}
+                images={
+                  tweet[0].images
+                    ? (JSON.parse(tweet[0].images) as [any])
+                    : undefined
+                }
               />
             ))}
           </div>

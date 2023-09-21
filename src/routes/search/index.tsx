@@ -71,7 +71,9 @@ export const get = async (context: Context) => {
                 ReplyMessage={tweet.replyMessage || undefined}
                 ReplyUser={tweet.replyUser || undefined}
                 ReplyId={tweet.replyId || undefined}
-                images={tweet.images ? (tweet.images as [any]) : undefined}
+                images={
+                  tweet.images ? (JSON.parse(tweet.images) as [any]) : undefined
+                }
                 className="h-min flex-shrink"
               />
             ))}

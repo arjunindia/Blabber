@@ -16,7 +16,7 @@ export const tweets = sqliteTable("tweets", {
   createdAt: integer("createdAt", { mode: "timestamp" })
     .$defaultFn(() => new Date())
     .notNull(),
-  image: text("image", { mode: "json" }),
+  image: text("image"),
   isRetweet: integer("isRetweet", { mode: "boolean" }).notNull().default(false),
   retweetOf: text("retweetOf", { length: 25 }),
   retweets: integer("retweets", { mode: "number" }).notNull().default(0),

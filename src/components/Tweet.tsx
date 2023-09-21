@@ -148,7 +148,7 @@ export const Tweet = ({
     <div
       class={`tweet flex flex-1 gap-6 w-full h-min p-3 sm:p-8 rounded-2xl bg-secondary bg-opacity-30 ${className} cursor-pointer`}
       data-id={id}
-      onclick={`const t=["A","BUTTON","SVG","PATH"];t.includes(event.target.tagName.toUpperCase())||(window.location.href='/tweet/${id}')`}
+      onclick={`const t=["A","BUTTON","SVG","PATH","IMG"];t.includes(event.target.tagName.toUpperCase())||(window.location.href='/tweet/${id}')`}
     >
       <img
         class="rounded-full w-8 h-8 sm:w-16 sm:h-16"
@@ -226,15 +226,14 @@ export const Tweet = ({
         </p>
 
         {images && (
-          // twitter grid
-          <div class="grid grid-cols-2 gap-2">
+          <div class="flex flex-wrap flex-row gap-2">
             {images.map((image) => (
-              <img
-                src={image.url}
-                class="rounded-2xl object-cover max-h-[20rem] md:max-h-[30rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[60rem]"
-                width={`${image.width}px`}
-                height={`${image.height}px`}
-              />
+              <a href={image.url}>
+                <img
+                  src={image.url}
+                  class="rounded-2xl object-cover object-center max-w-[20rem] max-h-[20rem]"
+                />
+              </a>
             ))}
           </div>
         )}
