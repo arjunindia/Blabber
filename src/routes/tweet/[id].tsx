@@ -145,7 +145,11 @@ export const get = async (context: Context) => {
               <EditTweet currUser={session?.user} replyId={id} />
             ) : (
               <p class="text-text text-center">
-                You must be logged in to reply to a tweet.
+                You must be{" "}
+                <a href="/auth/login" class="text-link">
+                  logged in
+                </a>{" "}
+                to reply to a tweet.
               </p>
             )}
             {replies.map((reply) => (
