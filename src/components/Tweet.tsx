@@ -12,6 +12,7 @@ export interface TweetProps {
   className?: string;
   ReplyMessage?: string;
   ReplyUser?: string;
+  ReplyId?: string;
 }
 
 const DropDown = ({ children }: PropsWithChildren) => (
@@ -101,6 +102,7 @@ export const Tweet = ({
   className,
   ReplyMessage,
   ReplyUser,
+  ReplyId,
 }: TweetProps) => (
   <>
     <div
@@ -121,9 +123,13 @@ export const Tweet = ({
             <a class="text-text font-bold" href={`/user/${ReplyUser}`} safe>
               @{ReplyUser}
             </a>
-            <p class="text-text text-sm truncate max-w-[30vw] break-all" safe>
+            <a
+              href={"/tweet/" + ReplyId}
+              class="text-text text-sm truncate max-w-[30vw] break-all hover:underline"
+              safe
+            >
               {ReplyMessage}
-            </p>
+            </a>
           </div>
         )}
         <div class="flex flex-wrap flex-row gap-2 items-baseline w-full">

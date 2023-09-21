@@ -61,6 +61,7 @@ export const get = async (context: Context) => {
         verificationMessage: user.verificationMessage,
         replyMessage: replyTable.content,
         replyUser: replyUser.username,
+        replyId: replyTable.id,
       })
       .from(tweets)
       .where(eq(tweets.authorId, siteUser.id))
@@ -81,6 +82,7 @@ export const get = async (context: Context) => {
         owner={tweet.username === session?.user?.username}
         ReplyMessage={tweet.replyMessage || undefined}
         ReplyUser={tweet.replyUser || undefined}
+        ReplyId={tweet.replyId || undefined}
       />
     ));
     return (

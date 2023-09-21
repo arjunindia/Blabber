@@ -40,6 +40,25 @@ export const tweetLikes = sqliteTable("tweetLikes", {
     .$defaultFn(() => new Date()),
 });
 
+export const retweets = sqliteTable("retweets", {
+  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
+  tweetId: numeric("tweetId")
+    .notNull()
+    .references(() => tweets.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  userId: numeric("userId")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  createdAt: integer("createdAt", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export type TweetInsert = InferInsertModel<typeof tweets>;
 export type TweetSelect = InferSelectModel<typeof tweets>;
 

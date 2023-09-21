@@ -98,6 +98,7 @@ export const get = async (context: Context) => {
       verificationMessage: user.verificationMessage,
       ReplyMessage: repliesTable.content,
       ReplyUser: repliesUser.username,
+      replyId: repliesTable.id,
     })
     .from(tweets)
     .where(eq(tweets.id, id))
@@ -116,6 +117,7 @@ export const get = async (context: Context) => {
       verificationMessage: user.verificationMessage,
       ReplyMessage: repliesTable.content,
       ReplyUser: repliesUser.username,
+      replyId: repliesTable.id,
     })
     .from(tweets)
     .where(eq(tweets.replyTo, id))
@@ -134,6 +136,7 @@ export const get = async (context: Context) => {
             {...tweet[0]}
             ReplyMessage={tweet[0].ReplyMessage || ""}
             ReplyUser={tweet[0].ReplyUser || ""}
+            ReplyId={tweet[0].replyId || ""}
             owner={session && session?.user?.username === tweet[0].username}
           />
           <div class="flex flex-col gap-4">
@@ -150,6 +153,7 @@ export const get = async (context: Context) => {
                 {...reply}
                 ReplyMessage={reply.ReplyMessage || ""}
                 ReplyUser={reply.ReplyUser || ""}
+                ReplyId={reply.replyId || ""}
                 owner={session && session?.user?.username === reply.username}
               />
             ))}

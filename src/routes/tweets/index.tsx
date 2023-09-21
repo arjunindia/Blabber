@@ -92,6 +92,7 @@ export const get = async (context: Context) => {
       verificationMessage: user.verificationMessage,
       replyMessage: replies.content,
       replyUser: replyAuthor.username,
+      replyId: replies.id,
     })
     .from(tweets)
     .orderBy(desc(tweets.createdAt))
@@ -127,6 +128,7 @@ export const get = async (context: Context) => {
             owner={tweet.username === currUser?.username}
             ReplyMessage={tweet.replyMessage || undefined}
             ReplyUser={tweet.replyUser || undefined}
+            ReplyId={tweet.replyId || undefined}
           />
         ))
       ) : (
