@@ -13,6 +13,14 @@ export interface TweetProps {
   ReplyMessage?: string;
   ReplyUser?: string;
   ReplyId?: string;
+  images?: [
+    {
+      url: string;
+      deleteUrl: string;
+      width: number;
+      height: number;
+    }
+  ];
 }
 
 const DropDown = ({ children }: PropsWithChildren) => (
@@ -134,6 +142,7 @@ export const Tweet = ({
   ReplyMessage,
   ReplyUser,
   ReplyId,
+  images,
 }: TweetProps) => (
   <>
     <div
@@ -215,6 +224,21 @@ export const Tweet = ({
         >
           {content}
         </p>
+
+        {images && (
+          // twitter grid
+          <div class="grid grid-cols-2 gap-2">
+            {images.map((image) => (
+              <img
+                src={image.url}
+                class="rounded-2xl object-cover max-h-[20rem] md:max-h-[30rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[60rem]"
+                width={`${image.width}px`}
+                height={`${image.height}px`}
+              />
+            ))}
+          </div>
+        )}
+
         {!noInteraction && (
           <div class="flex flex-row gap-5 mt-4">
             <button

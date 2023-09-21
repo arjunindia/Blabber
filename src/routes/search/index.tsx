@@ -41,6 +41,7 @@ export const get = async (context: Context) => {
       replyMessage: replies.content,
       replyUser: replyAuthor.username,
       replyId: replies.id,
+      images: tweets.image,
     })
     .from(tweets)
     .where(like(tweets.content, "%" + searchQuery + "%"))
@@ -70,6 +71,7 @@ export const get = async (context: Context) => {
                 ReplyMessage={tweet.replyMessage || undefined}
                 ReplyUser={tweet.replyUser || undefined}
                 ReplyId={tweet.replyId || undefined}
+                images={tweet.images ? (tweet.images as [any]) : undefined}
                 className="h-min flex-shrink"
               />
             ))}

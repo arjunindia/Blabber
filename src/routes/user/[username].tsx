@@ -62,6 +62,7 @@ export const get = async (context: Context) => {
         replyMessage: replyTable.content,
         replyUser: replyUser.username,
         replyId: replyTable.id,
+        images: tweets.image,
       })
       .from(tweets)
       .where(eq(tweets.authorId, siteUser.id))
@@ -83,6 +84,7 @@ export const get = async (context: Context) => {
         ReplyMessage={tweet.replyMessage || undefined}
         ReplyUser={tweet.replyUser || undefined}
         ReplyId={tweet.replyId || undefined}
+        images={tweet.images ? (tweet.images as [any]) : undefined}
       />
     ));
     return (

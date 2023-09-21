@@ -16,31 +16,12 @@ export const tweets = sqliteTable("tweets", {
   createdAt: integer("createdAt", { mode: "timestamp" })
     .$defaultFn(() => new Date())
     .notNull(),
-  image: text("image"),
+  image: text("image", { mode: "json" }),
   isRetweet: integer("isRetweet", { mode: "boolean" }).notNull().default(false),
   retweetOf: text("retweetOf", { length: 25 }),
   retweets: integer("retweets", { mode: "number" }).notNull().default(0),
 });
 export const tweetLikes = sqliteTable("tweetLikes", {
-  id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
-  tweetId: numeric("tweetId")
-    .notNull()
-    .references(() => tweets.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  userId: numeric("userId")
-    .notNull()
-    .references(() => user.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  createdAt: integer("createdAt", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
-
-export const retweets = sqliteTable("retweets", {
   id: integer("id").primaryKey({ autoIncrement: true }).notNull(),
   tweetId: numeric("tweetId")
     .notNull()

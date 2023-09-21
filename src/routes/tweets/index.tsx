@@ -6,6 +6,10 @@ import { tweets, TweetInsert, tweetLikes } from "../../db/schema/tweetSchema";
 import { desc, eq, sql } from "drizzle-orm";
 import { Tweet } from "../../components/Tweet";
 import { alias } from "drizzle-orm/sqlite-core";
+import { FileUpload } from "../../components/FileUpload";
+import { createId } from "@paralleldrive/cuid2";
+
+import { env } from "bun";
 const EditTweet = ({ currUser }: { currUser: any }) => (
   <div class="flex flex-1 gap-6 w-full h-min p-8 rounded-2xl bg-secondary">
     <img
@@ -34,28 +38,14 @@ const EditTweet = ({ currUser }: { currUser: any }) => (
         `}
       />
       <p id="tweetlength" class="ml-auto"></p>
-      <div class="flex flex-row gap-5 mt-4 justify-between">
-        <button class="text-text">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-            />
-          </svg>
-        </button>
+      <div class="flex flex-row gap-5 mt-4 justify-between items-end">
+        <FileUpload />
         <button
           class="text-text px-6 py-3 bg-primary rounded-full"
           hx-post="/tweets"
-          hx-swap="outerHTML"
-          hx-include="textarea"
+          hx-swap="innerHTML"
+          hx-include="textarea, input[type=file]"
+          hx-encoding="multipart/form-data"
           hx-target="#tweet-error"
         >
           Post
@@ -93,6 +83,7 @@ export const get = async (context: Context) => {
       replyMessage: replies.content,
       replyUser: replyAuthor.username,
       replyId: replies.id,
+      images: tweets.image,
     })
     .from(tweets)
     .orderBy(desc(tweets.createdAt))
@@ -129,6 +120,7 @@ export const get = async (context: Context) => {
             ReplyMessage={tweet.replyMessage || undefined}
             ReplyUser={tweet.replyUser || undefined}
             ReplyId={tweet.replyId || undefined}
+            images={tweet.images ? (tweet.images as [any]) : undefined}
           />
         ))
       ) : (
@@ -145,13 +137,91 @@ export const post = async (context: Context) => {
   if (!session) {
     return "Unauthorized, please login again.";
   }
-  const { content } = body as { content: string };
+
+  const { content, images } = body as {
+    content: string;
+    images?: File | File[];
+  };
   if (!content) {
     return "Content is required";
+  }
+
+  if (content.length > 300) {
+    return "Content must be less than 300 characters";
+  }
+
+  // upload images to imgBB
+
+  const imgCDN = "https://api.imgbb.com/1/upload";
+  const imgCDNKey = env.IMG_CDN_KEY;
+
+  if (!imgCDNKey) {
+    return "Internal Server Error";
+  }
+  let imgCDNJson;
+  let imgCDNLinks;
+  if (images && !Array.isArray(images)) {
+    try {
+      const formData = new FormData();
+      formData.append("image", images);
+      formData.append("key", imgCDNKey);
+      formData.append("name", createId());
+      const imgCDNResponse = await fetch(imgCDN, {
+        method: "POST",
+        body: formData,
+      });
+      imgCDNJson = await imgCDNResponse.json();
+      imgCDNLinks = [
+        {
+          url: imgCDNJson.data.url,
+          deleteUrl: imgCDNJson.data.delete_url,
+          width: imgCDNJson.data.width,
+          height: imgCDNJson.data.height,
+        },
+      ];
+    } catch (e) {
+      console.log(e);
+      console.log(imgCDNJson);
+      return "Internal Server Error";
+    }
+  } else if (images && images.length > 0) {
+    if (images?.length > 4) {
+      return "Only 4 images allowed";
+    }
+
+    try {
+      const imgCDNResponse = await Promise.all(
+        images?.map((image) => {
+          const formData = new FormData();
+          formData.append("image", image);
+          formData.append("key", imgCDNKey);
+          formData.append("name", createId());
+          return fetch(imgCDN, {
+            method: "POST",
+            body: formData,
+          });
+        }) || []
+      );
+      imgCDNJson = await Promise.all(imgCDNResponse.map((res) => res.json()));
+      imgCDNLinks = imgCDNJson.map((json) => {
+        return {
+          url: json.data.url,
+          deleteUrl: json.data.delete_url,
+          width: json.data.width,
+          height: json.data.height,
+        };
+      });
+      console.log(imgCDNJson);
+    } catch (e) {
+      console.log(e);
+      console.log(imgCDNJson);
+      return "Internal Server Error";
+    }
   }
   const tweet: TweetInsert = {
     content: content,
     authorId: session.user.userId,
+    image: images ? JSON.stringify(imgCDNLinks) : undefined,
   };
   try {
     await db.insert(tweets).values(tweet);
