@@ -167,9 +167,7 @@ export const get = async (context: Context) => {
                 ReplyId={reply.replyId || ""}
                 owner={session && session?.user?.username === reply.username}
                 images={
-                  tweet[0].images
-                    ? (JSON.parse(tweet[0].images) as [any])
-                    : undefined
+                  reply.images ? (JSON.parse(reply.images) as [any]) : undefined
                 }
               />
             ))}
