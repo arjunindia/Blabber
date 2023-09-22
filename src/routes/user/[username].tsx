@@ -88,7 +88,27 @@ export const get = async (context: Context) => {
       />
     ));
     return (
-      <BaseHtml>
+      <BaseHtml
+        title={`Blabber | ${siteUser.name} (@${siteUser.username})`}
+        description={
+          siteUser.bio ||
+          "Blabber is a social media platform where you can share your thoughts with others!"
+        }
+        image={siteUser.avatar || "/public/icon.jpg"}
+        keywords={
+          siteUser.name +
+          ", " +
+          siteUser.username +
+          ", " +
+          siteUser.bio +
+          ", " +
+          siteUser.location +
+          ", " +
+          siteUser.website +
+          ", blabber, social media, twitter, facebook, instagram, social network, share, thoughts"
+        }
+        url={`https://blabber.fly.dev/user/${siteUser.username}`}
+      >
         <body class="flex w-screen overflow-x-hidden min-h-screen justify-center bg-background">
           <Sidebar authenticated={authenticated} />
           <Profile

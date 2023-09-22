@@ -128,7 +128,17 @@ export const get = async (context: Context) => {
     .leftJoin(repliesUser, eq(repliesUser.id, repliesTable.authorId));
 
   return (
-    <BaseHtml>
+    <BaseHtml
+      title={`${tweet[0].name} (@${tweet[0].username}) / Tweet`}
+      description={tweet[0].content}
+      image={
+        tweet[0].images
+          ? JSON.parse(tweet[0].images)[0]
+          : `https://blabber.fly.dev/public/icon.jpg`
+      }
+      keywords={`${tweet[0].name}, ${tweet[0].username}, ${tweet[0].content},blabber, social media, twitter, facebook, instagram, social network, share, thoughts`}
+      url={`https://blabber.fly.dev/tweet/${id}`}
+    >
       <body class="flex w-screen overflow-x-hidden min-h-screen justify-center bg-background">
         <Sidebar authenticated={authenticated} />
         <div class="flex-[2] py-4 px-3">

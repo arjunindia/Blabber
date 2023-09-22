@@ -1,6 +1,21 @@
 import { PropsWithChildren } from "@elysiajs/html";
 
-const BaseHtml = ({ children }: PropsWithChildren) => (
+interface BaseHtmlProps extends PropsWithChildren {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+  url?: string;
+}
+
+const BaseHtml = ({
+  children,
+  title = "Blabber | The best place to share your thoughts with others!",
+  description = "Blabber is a social media platform where you can share your thoughts with others!",
+  keywords = "blabber, social media, twitter, facebook, instagram, social network, share, thoughts",
+  image = "/public/icon.jpg",
+  url = "https://blabber.fly.dev",
+}: BaseHtmlProps) => (
   <>
     {`<!DOCTYPE html>`}
     <html lang="en">
@@ -8,8 +23,33 @@ const BaseHtml = ({ children }: PropsWithChildren) => (
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>
-          Blabber | The best place to share your thoughts with others!
+          {title} | {description}
         </title>
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta
+          property="twitter:title"
+          content={title}
+          data-tippy-content={title}
+        />
+        <meta
+          property="twitter:description"
+          content={description}
+          data-tippy-content={description}
+        />
+        <meta property="og:image" content={`${url}${image}`} />
+        <meta property="twitter:image" content={`${url}${image}`} />
+        <meta property="og:url" content={url} />
+        <meta property="twitter:url" content={url} />
+        <meta property="og:type" content="website" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="twitter:site" content="@Blabber" />
+        <meta name="twitter:creator" content="@Blabber" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <link rel="icon" href="/public/icon.ico" />
         <script src="https://unpkg.com/htmx.org@1.9.3"></script>
         <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
