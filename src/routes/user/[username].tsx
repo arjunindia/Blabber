@@ -94,7 +94,7 @@ export const get = async (context: Context) => {
           siteUser.bio ||
           "Blabber is a social media platform where you can share your thoughts with others!"
         }
-        image={siteUser.avatar || "/public/icon.jpg"}
+        image={siteUser.avatar || "https://blabber.fly.dev/public/icon.jpg"}
         keywords={
           siteUser.name +
           ", " +

@@ -13,7 +13,7 @@ const BaseHtml = ({
   title = "Blabber | The best place to share your thoughts with others!",
   description = "Blabber is a social media platform where you can share your thoughts with others!",
   keywords = "blabber, social media, twitter, facebook, instagram, social network, share, thoughts",
-  image = "/public/icon.jpg",
+  image = "https://blabber.fly.dev/public/icon.jpg",
   url = "https://blabber.fly.dev",
 }: BaseHtmlProps) => (
   <>
@@ -39,8 +39,8 @@ const BaseHtml = ({
           content={description}
           data-tippy-content={description}
         />
-        <meta property="og:image" content={`${url}${image}`} />
-        <meta property="twitter:image" content={`${url}${image}`} />
+        <meta property="og:image" content={`${image}`} />
+        <meta property="twitter:image" content={`${image}`} />
         <meta property="og:url" content={url} />
         <meta property="twitter:url" content={url} />
         <meta property="og:type" content="website" />
