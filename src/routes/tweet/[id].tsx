@@ -133,7 +133,7 @@ export const get = async (context: Context) => {
       description={tweet[0].content}
       image={
         tweet[0].images
-          ? JSON.parse(tweet[0].images)[0]
+          ? JSON.parse(tweet[0].images)[0].url
           : `https://blabber.fly.dev/public/icon.jpg`
       }
       keywords={`${tweet[0].name}, ${tweet[0].username}, ${tweet[0].content},blabber, social media, twitter, facebook, instagram, social network, share, thoughts`}
