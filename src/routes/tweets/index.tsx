@@ -39,7 +39,7 @@ const EditTweet = ({ currUser }: { currUser: any }) => (
       />
       <p id="tweetlength" class="ml-auto"></p>
       <div class="flex flex-row gap-5 mt-4 justify-between items-end">
-        <FileUpload />
+        <FileUpload fileIdString="files" prevIdString="image-preview" />
         <button
           class="text-text px-6 py-3 bg-primary rounded-full"
           hx-post="/tweets"

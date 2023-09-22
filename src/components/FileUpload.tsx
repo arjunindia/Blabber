@@ -1,13 +1,19 @@
-export const FileUpload = () => {
+export const FileUpload = ({
+  fileIdString,
+  prevIdString,
+}: {
+  fileIdString: string;
+  prevIdString: string;
+}) => {
   return (
     <div>
       <div class="mb-4">
-        <div id="image-previews" class="flex flex-wrap gap-2"></div>
+        <div id={prevIdString} class="flex flex-wrap gap-2"></div>
       </div>
 
       <div class="w-fit mr-auto">
         <label
-          for="files"
+          for={fileIdString}
           class="px-6 py-3 flex bg-primary text-text rounded-full cursor-pointer"
         >
           <svg
@@ -28,10 +34,10 @@ export const FileUpload = () => {
         <input
           type="file"
           name="images"
-          id="files"
+          id={fileIdString}
           class="hidden"
           multiple="multiple"
-          onchange="displayImagePreviews()"
+          onchange={`displayImagePreviews('${fileIdString}','${prevIdString}')`}
           accept="image/*"
         />
       </div>

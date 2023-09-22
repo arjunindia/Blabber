@@ -109,9 +109,10 @@ const BaseHtml = ({
         })`}
       </script>
       <script>
-        {`function displayImagePreviews() {
-  const filesInput = document.getElementById('files');
-  const imagePreviews = document.getElementById('image-previews');
+        {`function displayImagePreviews(fileTarget,previewTarget) {
+          console.log(fileTarget,previewTarget);
+  const filesInput = document.getElementById(fileTarget);
+  const imagePreviews = document.getElementById(previewTarget);
   const maxAllowedFiles = 4;
   imagePreviews.innerHTML = ''; // Clear existing previews
   if (filesInput.files.length > maxAllowedFiles) {
