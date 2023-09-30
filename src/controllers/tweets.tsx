@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { Elysia, t } from "elysia";
 import { authed } from "../auth/middleware";
-import { AdditionalTweetList, TweetCard } from "../components/tweets";
+// import { AdditionalTweetList, TweetCard } from "../components/tweets";
 import { ctx } from "../context";
 import { tweets } from "../db/schema/tweets";
 
@@ -20,7 +20,7 @@ export const tweetsController = new Elysia({
     async ({ query: { after } }) => {
       const date = new Date(after);
 
-      return <AdditionalTweetList after={date} />;
+      // return <AdditionalTweetList after={date} />;
     },
     {
       query: t.Object({
@@ -51,14 +51,14 @@ export const tweetsController = new Elysia({
         throw new Error("Failed to create tweet");
       }
 
-      return (
-        <TweetCard
-          content={tweet.content}
-          createdAt={tweet.createdAt}
-          author={{ handle: session.user.handle }}
-          id={tweet.id}
-        />
-      );
+      // return (
+      //   // <TweetCard
+      //   //   content={tweet.content}
+      //   //   createdAt={tweet.createdAt}
+      //   //   author={{ handle: session.user.handle }}
+      //   //   id={tweet.id}
+      //   // />
+      // );
     },
     {
       body: t.Object({

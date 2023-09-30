@@ -13,35 +13,9 @@ export const authController = new Elysia({
 })
   .use(ctx)
   .post(
-    "/signInOrUp",
-    async ({ body: { handle, password, action }, auth, set }) => {
-      let user;
-
-      // Decide action based on the "action" param sent in body
-      if (action === "signup") {
-        user = await auth
-          .createUser({
-            key: {
-              providerId: "basic",
-              providerUserId: handle.toLowerCase(),
-              password,
-            },
-            attributes: {
-              handle,
-            },
-          })
-          .catch((err) => {
-            if (err.code === "SQLITE_CONSTRAINT") {
-              throw new DuplicateEmailError();
-            } else {
-              throw err;
-            }
-          });
-      } else if (action === "signin") {
-        user = await auth.useKey("basic", handle.toLowerCase(), password);
-      } else {
-        throw new Error("Invalid action");
-      }
+    "/signIn",
+    async ({ body: { email, password }, auth, set }) => {
+      let user = await auth.useKey("email", email.toLowerCase(), password);
 
       const session = await auth.createSession({
         userId: user.userId,
@@ -54,29 +28,24 @@ export const authController = new Elysia({
     },
     {
       body: t.Object({
-        handle: t.String({
-          minLength: 1,
-          maxLength: 20,
+        email: t.String({
+          minLength: 5,
+          maxLength: 255,
+          format: "email",
+          default: "",
         }),
         password: t.String({
           minLength: 4,
           maxLength: 255,
         }),
-        action: t.Enum({
-          signup: "signup",
-          signin: "signin",
-        }), // Enum to validate action type
       }),
       error({ code, error, set, log }) {
-
         log.error(error);
 
         let errorMessage = "";
 
         if (code === "VALIDATION") {
-          errorMessage = "Invalid email or password";
-        } else if (error instanceof DuplicateEmailError) {
-          errorMessage = "Email already exists";
+          errorMessage = "The email or password has an invalid format! 🤔";
         } else if (
           error instanceof LuciaError &&
           (error.message === "AUTH_INVALID_KEY_ID" ||
@@ -84,12 +53,16 @@ export const authController = new Elysia({
         ) {
           errorMessage = "Invalid email or password";
         } else {
-          errorMessage = "Internal server error";
+          errorMessage = "Error: " + code;
         }
 
         set.status = "Unauthorized"; // set the status to 400 for all errors for simplicity
 
-        return `${errorMessage}`;
+        return (
+          <div class="text-sm text-red-500" id="errorMessage">
+            {errorMessage}
+          </div>
+        );
       },
     },
   )

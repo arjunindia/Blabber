@@ -49,14 +49,11 @@ export const auth = lucia({
   }),
   getUserAttributes: (data) => {
     return {
-      handle: data.handle,
+      id: data.id,
+      username: data.username,
+      email: data.email,
     };
   },
 });
 
 export type Auth = typeof auth;
-
-export const githubAuth = github(auth, {
-  clientId: config.env.GITHUB_CLIENT_ID,
-  clientSecret: config.env.GITHUB_CLIENT_SECRET,
-});

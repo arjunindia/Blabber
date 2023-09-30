@@ -4,7 +4,7 @@ import { tweets } from "./tweets";
 
 export { tweets } from "./tweets";
 
-export { key, session, user } from "./auth";
+export { user, user_key, user_session } from "./auth";
 
 export const userRelations = relations(user, ({ many }) => ({
   tweets: many(tweets),

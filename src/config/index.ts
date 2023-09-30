@@ -17,8 +17,7 @@ const env = createEnv({
           : true;
       }),
     NODE_ENV: z.enum(["development", "production"]),
-    GITHUB_CLIENT_ID: z.string(),
-    GITHUB_CLIENT_SECRET: z.string(),
+    IMG_CDN_KEY: z.string(),
   },
   runtimeEnv: process.env,
 });

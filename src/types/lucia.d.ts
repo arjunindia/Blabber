@@ -1,8 +1,11 @@
 /// <reference types="lucia" />
 declare namespace Lucia {
-  type Auth = import("../auth/index").Auth;
+  type Auth = import("./lucia.js").Auth;
   type DatabaseUserAttributes = {
-    handle: string;
+    email: string;
+    username: string;
+    name: string;
+    createdAt: Date;
   };
   type DatabaseSessionAttributes = {};
 }

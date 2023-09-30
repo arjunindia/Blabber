@@ -2,7 +2,7 @@ import { Suspense } from "beth-stack/jsx";
 import { Elysia } from "elysia";
 import { authed } from "../auth/middleware";
 import { BaseHtml } from "../components/base";
-import { InitialTweetList, TweetCreationForm } from "../components/tweets";
+import { Tweet } from "../components/tweets";
 import { ctx } from "../context";
 
 export const index = new Elysia()
@@ -28,7 +28,7 @@ export const index = new Elysia()
               >
                 Sign Out
               </button>
-              <TweetCreationForm />
+              {/* <TweetCreationForm /> */}
             </>
           ) : (
             <a
@@ -39,7 +39,7 @@ export const index = new Elysia()
               Sign In
             </a>
           )}
-          <InitialTweetList />
+          {/* <InitialTweetList /> */}
         </div>
       </BaseHtml>
     ));

@@ -1,28 +1,38 @@
-import { blob, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { blob, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const user = sqliteTable("user", {
-  id: text("id").primaryKey(),
-  handle: text("handle").notNull(),
-  // other user attributes
-});
-
-export const session = sqliteTable("user_session", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
+  id: text("id").primaryKey().notNull(),
+  username: text("username").notNull().unique(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  bio: text("bio", { length: 300 }),
+  location: text("location"),
+  website: text("website"),
+  avatar: text("avatar"),
+  createdAt: integer("createdAt", { mode: "timestamp" })
     .notNull()
-    .references(() => user.id),
-  activeExpires: blob("active_expires", {
-    mode: "bigint",
-  }).notNull(),
-  idleExpires: blob("idle_expires", {
-    mode: "bigint",
-  }).notNull(),
+    .$defaultFn(() => new Date()),
+  verified: integer("verified", { mode: "boolean" }).notNull().default(false),
+  verificationMessage: text("verificationMessage"),
 });
-
-export const key = sqliteTable("user_key", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
+export const user_session = sqliteTable("user_session", {
+  id: text("id").primaryKey().notNull(),
+  user_id: text("user_id")
     .notNull()
-    .references(() => user.id),
-  hashedPassword: text("hashed_password"),
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  active_expires: blob("active_expires", { mode: "bigint" }).notNull(),
+  idle_expires: blob("idle_expires", { mode: "bigint" }).notNull(),
+});
+export const user_key = sqliteTable("user_key", {
+  id: text("id").primaryKey().notNull(),
+  user_id: text("user_id")
+    .notNull()
+    .references(() => user.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  hashed_password: text("hashed_password"),
 });
