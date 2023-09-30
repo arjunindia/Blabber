@@ -1,3 +1,5 @@
+import { Interface } from "readline";
+
 type RoutesByType<
   Schema extends Record<string, any>, // Ensure keys are strings
   Type extends "get" | "post" | "put" | "delete" | "patch",

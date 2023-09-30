@@ -24,8 +24,38 @@ export const BaseHtml = ({ children, className }: Props) => (
       <link rel="stylesheet" href="/public/dist/unocss.css" />
       <script>{safeScript}</script>
     </head>
-    <body hx-boost="true" class={`h-screen ${className}`}>
-      {children}
-    </body>
+    <body class={`h-screen ${className}`}>{children}</body>
+
+    <script>
+      {`function displayImagePreviews(fileTarget,previewTarget) {
+          console.log(fileTarget,previewTarget);
+  const filesInput = document.getElementById(fileTarget);
+  const imagePreviews = document.getElementById(previewTarget);
+  const maxAllowedFiles = 4;
+  imagePreviews.innerHTML = ''; // Clear existing previews
+  if (filesInput.files.length > maxAllowedFiles) {
+    alert('You can only upload a maximum of 4 files.');
+    const excessFilesCount = filesInput.files.length - maxAllowedFiles;
+    for (let i = 0; i < excessFilesCount; i++) {
+      filesInput.value = ""; // Clear the file input
+    }
+
+  }
+
+  for (const file of filesInput.files) {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.classList.add('w-12', 'h-12', 'rounded-lg', 'object-cover');
+        imagePreviews.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}
+`}
+    </script>
   </html>
 );

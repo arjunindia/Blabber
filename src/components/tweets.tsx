@@ -32,43 +32,11 @@ export interface TweetProps {
 const DropDown = ({ children }: PropsWithChildren) => (
   <>
     <div class="ml-auto flex justify-center">
-      <div
-        x-data="{
-                  open: false,
-                  toggle() {
-                      if (this.open) {
-                          return this.close()
-                      }
-    
-                      this.$refs.button.focus()
-    
-                      this.open = true
-                  },
-                  close(focusAfter) {
-                      if (! this.open) return
-    
-                      this.open = false
-    
-                      focusAfter && focusAfter.focus()
-                  }
-              }"
-        {...{
-          "x-on:keydown.escape.prevent.stop": "close($refs.button)",
-          "x-on:focusin.window":
-            "! $refs.panel.contains($event.target) && close()",
-        }}
-        x-id="['dropdown-button']"
-        class="relative inline-block"
-      >
+      <div class="relative inline-block">
         <button
-          x-ref="button"
-          x-on:click="toggle()"
-          {...{
-            ":aria-expanded": "open",
-            ":aria-controls": "$id('dropdown-button')",
-          }}
           type="button"
           class="text-text inline-flex gap-2 rounded-full p-1 text-center text-sm font-medium shadow-sm transition-all  focus:ring focus:ring-gray-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-50 disabled:text-gray-400"
+          _="on click toggle .hidden on the next .popover"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -86,16 +54,7 @@ const DropDown = ({ children }: PropsWithChildren) => (
           </svg>
         </button>
 
-        <div
-          x-ref="panel"
-          x-show="open"
-          {...{
-            "x-transition.origin.top.left x-on:click.outside":
-              "close($refs.button)",
-            ":id": "$id('dropdown-button')",
-          }}
-          class="absolute left-0 z-10 mt-2 w-fit rounded-lg border border-gray-100 text-left text-sm shadow-lg"
-        >
+        <div class="popover absolute left-0 z-10 mt-2 hidden w-fit rounded-lg border border-gray-100 text-left text-sm shadow-lg">
           <div class="p-1">{children}</div>
         </div>
       </div>
@@ -249,7 +208,7 @@ export const Tweet = ({
             <button
               class="text-text"
               hx-trigger="load"
-              hx-get={`/tweets/like/${id}`}
+              hx-get={`/api/like/${id}`}
               hx-swap="outerHTML"
               hx-push-url="false"
             >
@@ -327,7 +286,8 @@ export const EditTweet = ({ currUser }: { currUser: any }) => (
         maxlength="300"
         required="true"
         name="content"
-        _={`
+        {...{
+          _: `
           on input set :contentvalue to 300 - me.value.length then log :contentvalue then put :contentvalue into #tweetlength
           if :contentvalue < 0 then
             add .text-red-500 to #tweetlength
@@ -336,7 +296,8 @@ export const EditTweet = ({ currUser }: { currUser: any }) => (
             remove .text-red-500 from #tweetlength
             add .text-green-500 to #tweetlength
           end
-        `}
+        `,
+        }}
       />
       <p id="tweetlength" class="ml-auto"></p>
       <div class="mt-4 flex flex-row items-end justify-between gap-5">
