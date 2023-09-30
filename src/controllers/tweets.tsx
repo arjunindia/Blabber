@@ -1,9 +1,10 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/sqlite-core";
 import { Elysia, t } from "elysia";
 import { authed } from "../auth/middleware";
-// import { AdditionalTweetList, TweetCard } from "../components/tweets";
+import { EditTweet, Tweet } from "../components/tweets";
 import { ctx } from "../context";
-import { tweets } from "../db/schema/tweets";
+import { tweets, user } from "../db/schema";
 
 export const tweetsController = new Elysia({
   prefix: "/tweets",
@@ -15,102 +16,87 @@ export const tweetsController = new Elysia({
 
     return { session };
   })
-  .get(
-    "/",
-    async ({ query: { after } }) => {
-      const date = new Date(after);
-
-      // return <AdditionalTweetList after={date} />;
-    },
-    {
-      query: t.Object({
-        after: t.String({
-          format: "date-time",
-        }),
-      }),
-    },
-  )
-  .post(
-    "/",
-    async ({ session, db, body, set, log }) => {
-      if (!session) {
-        set.status = "Unauthorized";
-        set.headers["HX-Redirect"] = "/signin";
-        return "Sign in to post a tweet.";
-      }
-
-      const [tweet] = await db
-        .insert(tweets)
-        .values({
-          authorId: session.user.userId,
-          content: body.content,
-        })
-        .returning();
-
-      if (!tweet) {
-        throw new Error("Failed to create tweet");
-      }
-
-      // return (
-      //   // <TweetCard
-      //   //   content={tweet.content}
-      //   //   createdAt={tweet.createdAt}
-      //   //   author={{ handle: session.user.handle }}
-      //   //   id={tweet.id}
-      //   // />
-      // );
-    },
-    {
-      body: t.Object({
-        content: t.String({
-          minLength: 1,
-          maxLength: 280,
-        }),
-      }),
-    },
-  )
-  .delete(
-    "/:tweetId",
-    async ({ session, db, params: { tweetId }, set, log }) => {
-      if (!session) {
-        set.status = "Unauthorized";
-        return (
-          <div id="tweetDeleteError" class="text-center text-red-500">
-            Unauthorized
-          </div>
-        );
-      }
-
-      const [tweet] = await db
-        .select()
-        .from(tweets)
-        .where(eq(tweets.id, tweetId));
-
-      log.debug(tweet);
-
-      if (!tweet) {
-        set.status = "Not Found";
-        return (
-          <div id="tweetDeleteError" class="text-center text-red-500">
-            Tweet not found
-          </div>
-        );
-      }
-
-      if (tweet.authorId !== session.user.userId) {
-        set.status = "Unauthorized";
-        return (
-          <div id="tweetDeleteError" class="text-center text-red-500">
-            Unauthorized
-          </div>
-        );
-      }
-
-      await db.delete(tweets).where(eq(tweets.id, tweetId));
-    },
-    {
-      params: t.Object({
-        tweetId: t.Numeric(),
-      }),
-    },
-  );
+  .get("/", async ({ session, db }) => {
+    let authenticated = false;
+    let currUser: any;
+    if (session) {
+      currUser = session.user;
+      const username = user.username;
+      authenticated = true;
+    }
+    if (session) {
+      currUser = session.user;
+      const username = user.username;
+      authenticated = true;
+    }
+    const replies = alias(tweets, "replies");
+    const replyAuthor = alias(user, "replyAuthor");
+    const tweetList = await db
+      .select({
+        id: tweets.id,
+        content: tweets.content,
+        createdAt: tweets.createdAt,
+        name: user.name,
+        username: user.username,
+        verified: user.verified,
+        verificationMessage: user.verificationMessage,
+        replyMessage: replies.content,
+        replyUser: replyAuthor.username,
+        replyId: replies.id,
+        images: tweets.image,
+      })
+      .from(tweets)
+      .orderBy(desc(tweets.createdAt))
+      .innerJoin(user, eq(tweets.authorId, user.id))
+      .leftJoin(replies, eq(tweets.replyTo, replies.id))
+      .leftJoin(replyAuthor, eq(replies.authorId, replyAuthor.id));
+    return (
+      <div class="mx-8 flex h-min flex-[2] flex-col gap-6 py-6" id="tweets">
+        <div class="flex items-center justify-between">
+          <h1 class="text-text block flex-1 pl-8 text-2xl font-bold sm:hidden">
+            Blabber
+          </h1>
+          {!authenticated && (
+            <a
+              href="/auth/signup"
+              class="bg-primary hover:bg-primaryDark text-text rounded-full p-4 px-8 text-xl sm:hidden"
+            >
+              Signup
+            </a>
+          )}
+        </div>
+        {authenticated && <EditTweet currUser={currUser} />}
+        {tweetList.length > 0 ? (
+          tweetList.map((tweet) => (
+            <Tweet
+              id={tweet.id}
+              content={tweet.content}
+              createdAt={tweet.createdAt}
+              name={tweet.name}
+              username={tweet.username}
+              verified={tweet.verified}
+              verificationMessage={tweet.verificationMessage || ""}
+              owner={tweet.username === currUser?.username}
+              ReplyMessage={tweet.replyMessage}
+              ReplyUser={tweet.replyUser}
+              ReplyId={tweet.replyId}
+              images={
+                tweet.images
+                  ? (JSON.parse(tweet.images) as [
+                      {
+                        url: string;
+                        deleteUrl: string;
+                        width: number;
+                        height: number;
+                      },
+                    ])
+                  : null
+              }
+            />
+          ))
+        ) : (
+          <p class="text-text">No tweets yet</p>
+        )}
+      </div>
+    );
+  });

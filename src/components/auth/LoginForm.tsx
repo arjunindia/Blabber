@@ -59,7 +59,7 @@ export const LoginForm = ({
 
         <p class="text-text">
           Not a member?{" "}
-          <a class="text-link" href="/auth/signup">
+          <a class="text-link" href="/signup">
             Sign up now!
           </a>
         </p>

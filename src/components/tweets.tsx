@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from "beth-stack/jsx";
 import { db } from "../db";
 import { tweets } from "../db/schema/tweets";
+import { FileUpload } from "./FileUpload";
 
 export interface TweetProps {
   id: string;
@@ -13,17 +14,19 @@ export interface TweetProps {
   owner: boolean;
   noInteraction?: boolean;
   className?: string;
-  ReplyMessage?: string;
-  ReplyUser?: string;
-  ReplyId?: string;
-  images?: [
-    {
-      url: string;
-      deleteUrl: string;
-      width: number;
-      height: number;
-    },
-  ];
+  ReplyMessage?: string | null;
+  ReplyUser?: string | null;
+  ReplyId?: string | null;
+  images?:
+    | [
+        {
+          url: string;
+          deleteUrl: string;
+          width: number;
+          height: number;
+        },
+      ]
+    | null;
 }
 
 const DropDown = ({ children }: PropsWithChildren) => (
@@ -308,4 +311,48 @@ export const Tweet = ({
     </div>
     <div id="modal-holder"></div>
   </>
+);
+export const EditTweet = ({ currUser }: { currUser: any }) => (
+  <div class="bg-secondary flex h-min w-full flex-1 gap-6 rounded-2xl p-8">
+    <img
+      class="h-8 w-8 rounded-full sm:h-16 sm:w-16"
+      width="64"
+      height="64"
+      src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${currUser.username}`}
+    />
+    <div class="flex w-full flex-col gap-2">
+      <textarea
+        class="text-text h-32 w-full rounded-xl bg-transparent"
+        placeholder="What's happening?"
+        maxlength="300"
+        required="true"
+        name="content"
+        _={`
+          on input set :contentvalue to 300 - me.value.length then log :contentvalue then put :contentvalue into #tweetlength
+          if :contentvalue < 0 then
+            add .text-red-500 to #tweetlength
+            remove .text-green-500 from #tweetlength
+          else
+            remove .text-red-500 from #tweetlength
+            add .text-green-500 to #tweetlength
+          end
+        `}
+      />
+      <p id="tweetlength" class="ml-auto"></p>
+      <div class="mt-4 flex flex-row items-end justify-between gap-5">
+        <FileUpload fileIdString="files" prevIdString="image-preview" />
+        <button
+          class="text-text bg-primary rounded-full px-6 py-3"
+          hx-post="/tweets"
+          hx-swap="innerHTML"
+          hx-include="textarea, input[type=file]"
+          hx-encoding="multipart/form-data"
+          hx-target="#tweet-error"
+        >
+          Post
+        </button>
+      </div>
+      <p class="text-sm text-red-500" id="tweet-error"></p>
+    </div>
+  </div>
 );
