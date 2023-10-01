@@ -89,26 +89,30 @@ export const likeController = new Elysia({
     },
     { params: t.Object({ tweetId: t.String() }) },
   )
-  .delete("/:tweetId", async ({ params: { tweetId }, session, db }) => {
-    if (!session) {
-      return new Response("Unauthorized", {
-        headers: {
-          "HX-Redirect": "/login",
-        },
-      });
-    }
-    try {
-      await db
-        .delete(tweetLikes)
-        .where(
-          and(
-            eq(tweetLikes.tweetId, tweetId),
-            eq(tweetLikes.userId, session.user.userId),
-          ),
-        );
-      return <LikeButton liked={false} id={tweetId} count={0} />;
-    } catch (e) {
-      console.log(e);
-      return <LikeButton liked={false} id={tweetId} count={0} />;
-    }
-  });
+  .delete(
+    "/:tweetId",
+    async ({ params: { tweetId }, session, db }) => {
+      if (!session) {
+        return new Response("Unauthorized", {
+          headers: {
+            "HX-Redirect": "/login",
+          },
+        });
+      }
+      try {
+        await db
+          .delete(tweetLikes)
+          .where(
+            and(
+              eq(tweetLikes.tweetId, tweetId),
+              eq(tweetLikes.userId, session.user.userId),
+            ),
+          );
+        return <LikeButton liked={false} id={tweetId} count={0} />;
+      } catch (e) {
+        console.log(e);
+        return <LikeButton liked={false} id={tweetId} count={0} />;
+      }
+    },
+    { params: t.Object({ tweetId: t.String() }) },
+  );
