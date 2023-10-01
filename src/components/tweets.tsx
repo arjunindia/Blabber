@@ -285,7 +285,13 @@ export const Tweet = ({
     <div id="modal-holder"></div>
   </>
 );
-export const EditTweet = ({ currUser }: { currUser: any }) => (
+export const EditTweet = ({
+  currUser,
+  replyId,
+}: {
+  currUser: any;
+  replyId?: string;
+}) => (
   <div class="bg-secondary flex h-min w-full flex-1 gap-6 rounded-2xl p-8">
     <img
       class="h-8 w-8 rounded-full sm:h-16 sm:w-16"
@@ -318,7 +324,7 @@ export const EditTweet = ({ currUser }: { currUser: any }) => (
         <FileUpload fileIdString="files" prevIdString="image-preview" />
         <button
           class="text-text bg-primary rounded-full px-6 py-3"
-          hx-post="/api/tweets"
+          hx-post={replyId ? `/api/reply/${replyId}` : "/api/tweets"}
           hx-swap="innerHTML"
           hx-include="textarea, input[type=file]"
           hx-encoding="multipart/form-data"
