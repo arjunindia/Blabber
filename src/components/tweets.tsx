@@ -176,7 +176,19 @@ export const Tweet = ({
             <DropDown>
               <button
                 class="btn rounded-md bg-red-900 px-4 py-2 text-slate-100"
-                hx-delete={`/tweets/${id}`}
+                hx-delete={`/api/tweets/${id}`}
+                _={`on htmx:confirm(issueRequest)
+             halt the event
+             call Swal.fire({
+              title: 'Are you sure?',
+              text: "Are you sure you want to delete this tweet? You won't be able to revert this action.",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+             })
+             if result.isConfirmed issueRequest()`}
               >
                 Delete
               </button>
@@ -245,7 +257,7 @@ export const Tweet = ({
             </button>
             <button
               class="text-text"
-              hx-get={`/tweets/reply/${id}`}
+              hx-get={`/api/reply/${id}`}
               hx-swap="outerHTML"
               hx-target="#modal-holder"
             >
@@ -281,7 +293,7 @@ export const EditTweet = ({ currUser }: { currUser: any }) => (
     />
     <div class="flex w-full flex-col gap-2">
       <textarea
-        class="text-text h-32 w-full rounded-xl bg-transparent"
+        class="text-text h-32 w-full resize-none rounded-xl bg-transparent p-3"
         placeholder="What's happening?"
         maxlength="300"
         required="true"
@@ -299,12 +311,12 @@ export const EditTweet = ({ currUser }: { currUser: any }) => (
         `,
         }}
       />
-      <p id="tweetlength" class="ml-auto"></p>
+      <p id="tweetlength" class="ml-auto text-green-500 text-red-500"></p>
       <div class="mt-4 flex flex-row items-end justify-between gap-5">
         <FileUpload fileIdString="files" prevIdString="image-preview" />
         <button
           class="text-text bg-primary rounded-full px-6 py-3"
-          hx-post="/tweets"
+          hx-post="/api/tweets"
           hx-swap="innerHTML"
           hx-include="textarea, input[type=file]"
           hx-encoding="multipart/form-data"

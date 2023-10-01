@@ -1,8 +1,8 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/sqlite-core";
 import { Elysia, t } from "elysia";
-import { authed } from "../auth/middleware";
 import { EditTweet, Tweet } from "../components/tweets";
+import { config } from "../config";
 import { ctx } from "../context";
 import { tweets, user } from "../db/schema";
 
@@ -99,4 +99,109 @@ export const tweetsController = new Elysia({
         )}
       </div>
     );
-  });
+  })
+  .post(
+    "/",
+    async ({ session, body, db, set }) => {
+      if (!session) {
+        return "Unauthorized, please login again.";
+      }
+      const { content, images } = body;
+      if (!content) {
+        return "Content is required";
+      }
+      if (content.length > 300) {
+        return "Content is too long";
+      }
+      if (images && images.length > 4) {
+        return "You can only upload up to 4 images";
+      }
+      const imgCDN = "https://api.imgbb.com/1/upload";
+      const imgCDNKey = config.env.IMG_CDN_KEY;
+      const imgJson: any[] = [];
+      if (images && images.length > 0) {
+        for (const image of images) {
+          const formData = new FormData();
+          formData.append("image", image);
+          formData.append("key", imgCDNKey);
+          const res = await fetch(imgCDN, {
+            method: "POST",
+            body: formData,
+          });
+          const { data } = await res.json();
+          imgJson.push(data);
+        }
+      }
+      if (images && !Array.isArray(images)) {
+        const formData = new FormData();
+        formData.append("image", images);
+        formData.append("key", imgCDNKey);
+        const res = await fetch(imgCDN, {
+          method: "POST",
+          body: formData,
+        });
+        const { data } = await res.json();
+        imgJson.push(data);
+      }
+      const imgUrls = imgJson.map((url) => {
+        return {
+          url: url.url,
+          deleteUrl: url.delete_url,
+          width: url.width,
+          height: url.height,
+        };
+      });
+      console.log(imgJson);
+
+      const tweet = await db.insert(tweets).values({
+        content,
+        authorId: session.user.id,
+        image: imgUrls.length > 0 ? JSON.stringify(imgJson) : null,
+      });
+      set.headers["HX-Refresh"] = "true";
+      console.log(tweet);
+      return tweet;
+    },
+    {
+      body: t.Object({
+        content: t.String({
+          minLength: 1,
+          maxLength: 300,
+        }),
+
+        images: t.Optional(
+          t.Files({
+            maxFiles: 4,
+            maxSize: 1024 * 1024 * 5,
+            minSize: 0,
+            mimeTypes: ["image/jpeg", "image/png", "image/gif"],
+            minItems: 0,
+            default: [],
+            type: ["image/jpeg", "image/png", "image/gif"],
+            maxItems: 4,
+          }),
+        ),
+      }),
+    },
+  )
+  .delete(
+    "/:id",
+    async ({ params, session, db, set }) => {
+      if (!session) {
+        return "Unauthorized, please login again.";
+      }
+      const tweet = await db
+        .delete(tweets)
+        .where(
+          and(eq(tweets.id, params.id), eq(tweets.authorId, session.user.id)),
+        )
+        .execute();
+      set.headers["HX-Refresh"] = "true";
+      return tweet;
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+    },
+  );

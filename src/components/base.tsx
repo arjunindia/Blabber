@@ -18,13 +18,18 @@ export const BaseHtml = ({ children, className }: Props) => (
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
       <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
       <link
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
+        rel="stylesheet"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css"
       />
       <link rel="stylesheet" href="/public/dist/unocss.css" />
       <script>{safeScript}</script>
     </head>
-    <body class={`h-screen ${className}`}>{children}</body>
+    <body class={`${className}`}>{children}</body>
 
     <script>
       {`function displayImagePreviews(fileTarget,previewTarget) {
