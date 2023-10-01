@@ -18,13 +18,6 @@ export const likeController = new Elysia({
   .get(
     "/:tweetId",
     async ({ params: { tweetId }, session, db }) => {
-      if (!session) {
-        return new Response("Unauthorized", {
-          headers: {
-            "HX-Redirect": "/login",
-          },
-        });
-      }
       let count = 0;
       try {
         const likeCount = await db
@@ -76,15 +69,30 @@ export const likeController = new Elysia({
           },
         });
       }
+      let count = 0;
+      try {
+        const likeCount = await db
+          .select({
+            count: sql<number>`COUNT(*)`,
+          })
+          .from(tweetLikes)
+          .where(eq(tweetLikes.tweetId, tweetId))
+          .limit(1);
+        count = likeCount[0]?.count || 0;
+      } catch (e) {
+        console.log(e);
+        count = 0;
+      }
       try {
         await db.insert(tweetLikes).values({
           tweetId,
           userId: session.user.userId,
         });
-        return <LikeButton liked={true} id={tweetId} count={0} />;
+
+        return <LikeButton liked={true} id={tweetId} count={count + 1} />;
       } catch (e) {
         console.log(e);
-        return <LikeButton liked={false} id={tweetId} count={0} />;
+        return <LikeButton liked={false} id={tweetId} count={count} />;
       }
     },
     { params: t.Object({ tweetId: t.String() }) },
@@ -99,6 +107,20 @@ export const likeController = new Elysia({
           },
         });
       }
+      let count = 0;
+      try {
+        const likeCount = await db
+          .select({
+            count: sql<number>`COUNT(*)`,
+          })
+          .from(tweetLikes)
+          .where(eq(tweetLikes.tweetId, tweetId))
+          .limit(1);
+        count = likeCount[0]?.count || 0;
+      } catch (e) {
+        console.log(e);
+        count = 0;
+      }
       try {
         await db
           .delete(tweetLikes)
@@ -108,10 +130,10 @@ export const likeController = new Elysia({
               eq(tweetLikes.userId, session.user.userId),
             ),
           );
-        return <LikeButton liked={false} id={tweetId} count={0} />;
+        return <LikeButton liked={false} id={tweetId} count={count - 1} />;
       } catch (e) {
         console.log(e);
-        return <LikeButton liked={false} id={tweetId} count={0} />;
+        return <LikeButton liked={false} id={tweetId} count={count} />;
       }
     },
     { params: t.Object({ tweetId: t.String() }) },
