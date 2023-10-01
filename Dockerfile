@@ -27,6 +27,9 @@ RUN bun install --ci
 # Copy application code
 COPY --link . .
 
+# UnoCSS
+RUN bun run uno
+
 # Final stage for app image
 FROM base
 
