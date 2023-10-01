@@ -73,7 +73,10 @@ export const editPage = new Elysia({
       }
 
       return htmlStream(() => (
-        <BaseHtml className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden">
+        <BaseHtml
+          className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden"
+          title="Edit User"
+        >
           <Sidebar authenticated={authenticated} />
           <EditForm {...siteUser} />
           <SideColumn />

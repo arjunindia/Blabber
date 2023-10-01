@@ -42,7 +42,7 @@ export const userPage = new Elysia()
 
       if (!siteUser) {
         return htmlStream(() => (
-          <BaseHtml>
+          <BaseHtml title={`Invalid Page`}>
             <Sidebar authenticated={authenticated} />
             <div class="flex flex-1 flex-col items-center justify-center">
               <h1 class="text-4xl font-bold">User not found</h1>
@@ -120,7 +120,17 @@ export const userPage = new Elysia()
         />
       ));
       return htmlStream(() => (
-        <BaseHtml className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden">
+        <BaseHtml
+          className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden"
+          title={`@${siteUser.username}`}
+          description={`
+          View the profile of ${siteUser.name} (@${siteUser.username}) on Blabber, the best place to share your thoughts with others!
+          `}
+          image={
+            siteUser.avatar ||
+            `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${siteUser.username}`
+          }
+        >
           <Sidebar authenticated={authenticated} />
           <Profile
             user={siteUser}

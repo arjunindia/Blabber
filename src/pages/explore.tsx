@@ -30,7 +30,11 @@ export const explore = new Elysia()
       .from(user)
       .where(eq(user.verified, true));
     return htmlStream(() => (
-      <BaseHtml className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden">
+      <BaseHtml
+        className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden"
+        title="Explore"
+        description="Explore verified users on Blabber"
+      >
         <div class="text-text bg-secondary m-12 w-full max-w-7xl rounded-2xl p-8">
           <h1 class=" text-text text-4xl font-bold">Explore</h1>
           <h2 class="text-text mt-8 text-xl font-thin">Our Verified Users</h2>

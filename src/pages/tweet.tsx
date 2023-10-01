@@ -89,7 +89,25 @@ export const tweet = new Elysia({
       }
 
       return htmlStream(() => (
-        <BaseHtml className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden pb-8">
+        <BaseHtml
+          className="bg-background flex min-h-screen w-screen justify-center overflow-x-hidden pb-8"
+          title={`Tweet by @${tweet?.username}`}
+          description={tweet?.content}
+          image={
+            tweet?.images
+              ? (
+                  JSON.parse(tweet.images) as [
+                    {
+                      url: string;
+                      deleteUrl: string;
+                      width: number;
+                      height: number;
+                    },
+                  ]
+                )[0].url
+              : undefined
+          }
+        >
           <Sidebar authenticated={authenticated} />
           <div class="flex-[2] px-3 py-8">
             <h1 class="text-text py-4 text-4xl font-bold">Tweet</h1>

@@ -15,7 +15,10 @@ export const signup = new Elysia().use(ctx).get("/signup", async (ctx) => {
   }
 
   return ctx.html(() => (
-    <BaseHtml className="bg-secondary text-text bg-login flex min-h-screen items-center bg-opacity-100">
+    <BaseHtml
+      className="bg-secondary text-text bg-login flex min-h-screen items-center bg-opacity-100"
+      title="Sign Up"
+    >
       <div class="prose bg-secondary mx-auto max-w-4xl rounded-2xl p-8 pb-8 shadow-2xl transition-all hover:shadow-lg md:p-16">
         <h1 class="text-text">
           Log In To <code safe>{"< Blabber />"}</code> ✨
