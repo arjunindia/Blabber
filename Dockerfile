@@ -35,4 +35,4 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "bun", "src/main.tsx" ]
+CMD [ "bun", "src/main.ts" ]
