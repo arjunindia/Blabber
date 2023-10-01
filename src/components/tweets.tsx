@@ -111,9 +111,11 @@ export const Tweet = ({
 }: TweetProps) => (
   <>
     <div
-      class={`tweet bg-secondary flex h-min w-full flex-1 gap-6 rounded-2xl bg-opacity-30 p-3 sm:p-8 ${className} cursor-pointer`}
+      class={`tweet bg-secondary flex h-min w-full flex-1 gap-6 rounded-2xl bg-opacity-30 p-3 hover:bg-opacity-50 sm:p-8 ${className} cursor-pointer`}
       data-id={id}
       onclick={`const t=["A","BUTTON","SVG","PATH","IMG"];t.includes(event.target.tagName.toUpperCase())||(window.location.href='/tweet/${id}')`}
+      // open in new tab only on middle click, also use the same logic as above to prevent opening in new tab when clicking on the buttons. open it in the background
+      onmousedown={`if(event.button==1){const t=["A","BUTTON","SVG","PATH","IMG"];t.includes(event.target.tagName.toUpperCase())||(window.open('/tweet/${id}','_blank').focus(),event.preventDefault())}`}
     >
       <img
         class="h-8 w-8 rounded-full sm:h-16 sm:w-16"
