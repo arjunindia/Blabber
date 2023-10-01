@@ -27,9 +27,6 @@ RUN bun install --ci
 # Copy application code
 COPY --link . .
 
-# Tailwind CSS
-RUN bun run tw
-
 # Final stage for app image
 FROM base
 
