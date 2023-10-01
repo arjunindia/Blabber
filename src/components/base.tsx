@@ -17,10 +17,7 @@ export const BaseHtml = ({ children, className }: Props) => (
       <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
       <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
-      <link
-        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
-        rel="stylesheet"
-      />
+      <link href="/public/swal.css" rel="stylesheet" />
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <link
         rel="stylesheet"
